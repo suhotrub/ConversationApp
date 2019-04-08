@@ -46,6 +46,8 @@
 
     <TextView
         android:id="@+id/textView3"
+        android:clickable="true"
+        android:background="?selectableItemBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"

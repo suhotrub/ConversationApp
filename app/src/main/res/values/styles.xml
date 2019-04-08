@@ -1,11 +1,15 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="textAppearanceLargePopupMenu">@style/AvenirRegular.16.Dark</item>
+        <item name="textAppearanceSmallPopupMenu">@style/AvenirRegular.16.Dark</item>
+        <item name="android:itemTextAppearance">@style/AvenirRegular.16.Dark</item>
+
     </style>
 
 
@@ -16,8 +20,16 @@
         <item name="android:foreground">?selectableItemBackground</item>
     </style>
 
+
+    <style name="StrokeButton" >
+        <item name="android:background">@drawable/bg_stroke_button</item>
+        <item name="android:textAppearance">@style/AvenirLight.16.White</item>
+        <item name="android:textColor">#7Fffffff</item>
+        <item name="android:foreground">?selectableItemBackground</item>
+    </style>
+
     <style name="AvenirLight">
-        <item name="android:fontFamily">@font/AvenirNextCyr-Light</item>
+        <item name="android:fontFamily">@font/avenir_light</item>
     </style>
 
     <style name="AvenirLight.16">
@@ -37,8 +49,9 @@
     </style>
 
     <style name="AvenirRegular">
-        <item name="android:fontFamily">@font/AvenirNextCyr-Regular</item>
+        <item name="android:fontFamily">@font/avenir_regular</item>
     </style>
+
 
     <style name="AvenirRegular.13">
         <item name="android:textSize">13sp</item>
@@ -48,5 +61,47 @@
         <item name="android:textColor">#ffffff</item>
     </style>
 
+    <style name="AvenirRegular.13.Dark">
+        <item name="android:textColor">#1D1D26</item>
+    </style>
+
+    <style name="AvenirRegular.13.Gray">
+        <item name="android:textColor">#7F1D1D26</item>
+    </style>
+
+    <style name="AvenirRegular.13.Accent">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="AvenirRegular.15">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="AvenirRegular.15.Dark">
+        <item name="android:textColor">#1D1D26</item>
+    </style>
+
+
+    <style name="AvenirRegular.16">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="AvenirRegular.16.White">
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="AvenirRegular.16.Dark">
+        <item name="android:textColor">#1D1D26</item>
+    </style>
+    <style name="AvenirRegular.16.Accent">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+    <style name="AvenirRegular.20">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="AvenirRegular.20.White">
+        <item name="android:textColor">#ffffff</item>
+    </style>
 
 </resources>

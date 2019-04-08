@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="95dp"
+    android:foreground="?selectableItemBackground"
+    android:clickable="true"
+    android:padding="15dp">
+
+    <ImageView
+        android:id="@+id/chat_avatar"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/chat_status"
+        android:layout_width="5dp"
+        android:layout_height="5dp"
+        android:layout_marginStart="15dp"
+        android:background="@drawable/bg_circle_red"
+        app:layout_constraintBottom_toBottomOf="@id/chat_name"
+        app:layout_constraintStart_toEndOf="@id/chat_avatar"
+        app:layout_constraintTop_toTopOf="@id/chat_name" />
+
+    <TextView
+        android:id="@+id/chat_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textAppearance="@style/AvenirRegular.16.Dark"
+        app:layout_constraintEnd_toStartOf="@id/chat_time"
+        app:layout_constraintStart_toEndOf="@id/chat_status"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginStart="15dp"
+        tools:text="Gorbachev Alexey" />
+
+    <TextView
+        android:id="@+id/chat_status_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textAppearance="@style/AvenirRegular.13.Dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/chat_avatar"
+        app:layout_constraintTop_toBottomOf="@id/chat_name"
+        tools:text="Rabotayu za edu" />
+
+    <TextView
+        android:id="@+id/chat_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="1dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textAppearance="@style/AvenirRegular.13.Gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/chat_avatar"
+        app:layout_constraintTop_toBottomOf="@id/chat_status_text"
+        tools:text="Slish chmo vihodi ebat tebya budu" />
+
+    <TextView
+        android:id="@+id/chat_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/chat_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/chat_name"
+        tools:text="10:25" />
+</android.support.constraint.ConstraintLayout>
