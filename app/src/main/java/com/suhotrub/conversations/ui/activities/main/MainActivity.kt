@@ -8,9 +8,9 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.suhotrub.conversations.R
-import com.suhotrub.conversations.model.Chat
+import com.suhotrub.conversations.model.group.GroupDto
 import com.suhotrub.conversations.ui.activities.logout.LogoutActivity
-import com.suhotrub.conversations.ui.activities.main.recycler.ChatItemController
+import com.suhotrub.conversations.ui.activities.main.recycler.GroupItemController
 import com.suhotrub.conversations.ui.util.recycler.EasyAdapter
 import com.suhotrub.conversations.ui.util.recycler.ItemList
 import dagger.android.AndroidInjection
@@ -27,7 +27,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     fun providePresenter() = presenter
 
     val adapter = EasyAdapter()
-    val chatItemController = ChatItemController()
+    val chatItemController = GroupItemController()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -53,7 +53,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         }
     }
 
-    override fun renderChats(chats: List<Chat>) {
+    override fun renderChats(chats: List<GroupDto>) {
         adapter.setItems(
                 ItemList.create()
                         .addAll(chats, chatItemController)

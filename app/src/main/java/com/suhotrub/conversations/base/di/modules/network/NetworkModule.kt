@@ -10,6 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -21,11 +22,16 @@ class NetworkModule {
     private val HTTP_LOG_TAG = "OkHttp"
 
     @Provides
+    @Named("BASE_URL")
+    @Singleton
+    fun provideBaseUrl() = "https://176.107.160.64:5000"
+
+    @Provides
     @Singleton
     internal fun provideRetrofit(okHttpClient: OkHttpClient,
                                  callAdapterFactory: CallAdapterFactory,
                                  gson: Gson,
-                                 apiUrl: String) =
+                                 @Named("BASE_URL") apiUrl: String) =
             Retrofit.Builder()
                     .client(okHttpClient)
                     .baseUrl(apiUrl)

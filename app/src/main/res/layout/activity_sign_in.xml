@@ -2,9 +2,11 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_gradient_background">
+    android:background="@drawable/bg_gradient_background"
+    android:fitsSystemWindows="false">
 
     <ImageView
         android:id="@+id/imageView"
@@ -46,12 +48,12 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:clickable="true"
-        android:background="?selectableItemBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:layout_marginStart="4dp"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
         android:text="Sign up"
         android:textAppearance="@style/AvenirRegular.13.White"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -59,24 +61,37 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/textView2" />
 
-    <Button
-        android:id="@+id/button"
-        style="@style/AccentButton"
+    <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="37dp"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
-        android:text="Sign in"
+        android:theme="@style/Widget.AppCompat.ProgressBar"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button"
+        style="@style/AccentButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:text="Sign in"
+        app:layout_constraintBottom_toBottomOf="@id/progressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/progressBar" />
+
 
     <EditText
         android:id="@+id/editText"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_marginBottom="10dp"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
@@ -87,7 +102,8 @@
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:textAppearance="@style/AvenirLight.16.White"
-        android:textColorHint="#ffffff"
+        android:textColor="#fff"
+        android:textColorHint="#77ffffff"
         app:layout_constraintBottom_toTopOf="@+id/editText2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -95,7 +111,7 @@
     <EditText
         android:id="@+id/editText2"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_marginBottom="50dp"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
@@ -106,8 +122,11 @@
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:textAppearance="@style/AvenirLight.16.White"
-        android:textColorHint="#ffffff"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        android:textColor="#fff"
+        android:textColorHint="#77ffffff"
+        app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+
 </android.support.constraint.ConstraintLayout>

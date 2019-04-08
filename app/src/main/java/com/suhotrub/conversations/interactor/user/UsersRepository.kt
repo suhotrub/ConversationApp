@@ -51,6 +51,7 @@ class UsersRepository @Inject constructor(
             )
     ).map {
         setToken(it)
+        it
     }
 
     fun login(
@@ -63,6 +64,7 @@ class UsersRepository @Inject constructor(
             )
     ).map {
         setToken(it)
+        it
     }
 
     fun getUsername() =

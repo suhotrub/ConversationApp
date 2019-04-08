@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.suhotrub.conversations.ui.activities.main.recycler.ChatView
+    <com.suhotrub.conversations.ui.activities.main.recycler.GroupView
         android:id="@+id/chat_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

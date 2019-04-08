@@ -5,19 +5,19 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.suhotrub.conversations.R
-import com.suhotrub.conversations.model.Chat
 import com.suhotrub.conversations.model.ChatStatusType
+import com.suhotrub.conversations.model.group.GroupDto
 import kotlinx.android.synthetic.main.view_chat.view.*
 import java.util.*
 
-class ChatView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+class GroupView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         FrameLayout(context, attrs, defStyleAttr) {
 
     init {
         inflate(context, R.layout.view_chat, this)
     }
 
-    fun bind(chat: Chat) {
+    fun bind(chat: GroupDto) {
 
         chat_message.text = chat.message
         chat_name.text = chat.name

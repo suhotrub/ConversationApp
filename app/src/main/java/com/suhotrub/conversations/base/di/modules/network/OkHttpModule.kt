@@ -1,6 +1,5 @@
 package com.suhotrub.conversations.base.di.modules.network
 
-import android.content.Context
 import android.os.Build
 import dagger.Module
 import dagger.Provides
@@ -10,12 +9,11 @@ import okhttp3.TlsVersion
 import okhttp3.logging.HttpLoggingInterceptor
 import timber.log.Timber
 import java.security.KeyStore
+import java.security.cert.CertificateException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManagerFactory
-import javax.net.ssl.X509TrustManager
+import javax.net.ssl.*
 
 
 /**
@@ -26,6 +24,40 @@ import javax.net.ssl.X509TrustManager
 class OkHttpModule {
 
     private val timeout: Long = 40 //секунд
+
+    private fun getUnsafeOkHttpClient(): OkHttpClient.Builder {
+        try {
+            // Create a trust manager that does not validate certificate chains
+            val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+                @Throws(CertificateException::class)
+                override fun checkClientTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) {
+                }
+
+                @Throws(CertificateException::class)
+                override fun checkServerTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) {
+                }
+
+                override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate> {
+                    return arrayOf()
+                }
+            })
+
+            // Install the all-trusting trust manager
+            val sslContext = SSLContext.getInstance("SSL")
+            sslContext.init(null, trustAllCerts, java.security.SecureRandom())
+            // Create an ssl socket factory with our all-trusting manager
+            val sslSocketFactory = sslContext.socketFactory
+
+            val builder = OkHttpClient.Builder()
+            builder.sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
+            builder.hostnameVerifier { hostname, session -> true }
+
+            return builder
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+
+    }
 
     /**
      * На старых устройствах не поддерживаются современные способы шифрования, по-умлочанию они выключены и их необходимо включить
@@ -70,7 +102,7 @@ class OkHttpModule {
     internal fun provideOkHttpClient(serviceInterceptor: ServiceInterceptor,
                                      httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
 
-        val okHttpClientBuilder = OkHttpClient.Builder()
+        val okHttpClientBuilder = getUnsafeOkHttpClient() //OkHttpClient.Builder()
         okHttpClientBuilder.connectTimeout(timeout, TimeUnit.SECONDS)
         okHttpClientBuilder.readTimeout(timeout, TimeUnit.SECONDS)
         okHttpClientBuilder.writeTimeout(timeout, TimeUnit.SECONDS)
@@ -78,6 +110,6 @@ class OkHttpModule {
         okHttpClientBuilder.addInterceptor(serviceInterceptor)
         okHttpClientBuilder.retryOnConnectionFailure(true)
 
-        return enableTls12OnPreLollipop(okHttpClientBuilder).build()
+        return okHttpClientBuilder.build() //enableTls12OnPreLollipop(okHttpClientBuilder).build()
     }
 }

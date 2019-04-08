@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -37,6 +38,7 @@
             android:orientation="vertical">
 
             <EditText
+                android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginBottom="9dp"
@@ -46,11 +48,26 @@
                 android:backgroundTint="#191D1D26"
                 android:ems="10"
                 android:hint="Name"
-                android:inputType="textEmailAddress"
+                android:inputType="textPersonName"
                 android:textAppearance="@style/AvenirRegular.15.Dark"
                 android:textColorHint="#771D1D26" />
 
             <EditText
+                android:id="@+id/surname"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="9dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:backgroundTint="#191D1D26"
+                android:ems="10"
+                android:hint="Surname"
+                android:inputType="textPersonName"
+                android:textAppearance="@style/AvenirRegular.15.Dark"
+                android:textColorHint="#771D1D26" />
+
+            <EditText
+                android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginBottom="9dp"
@@ -64,20 +81,21 @@
                 android:textColorHint="#771D1D26" />
 
             <EditText
+                android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginBottom="9dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginStart="30dp"
                 android:backgroundTint="#191D1D26"
-
                 android:ems="10"
                 android:hint="Password"
-                android:inputType="textEmailAddress"
+                android:inputType="textPassword"
                 android:textAppearance="@style/AvenirRegular.15.Dark"
                 android:textColorHint="#771D1D26" />
 
             <EditText
+                android:id="@+id/password_again"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginBottom="9dp"
@@ -86,10 +104,31 @@
                 android:backgroundTint="#191D1D26"
                 android:ems="10"
                 android:hint="Password"
-                android:inputType="textEmailAddress"
+                android:inputType="textPassword"
                 android:textAppearance="@style/AvenirRegular.15.Dark"
                 android:textColorHint="#771D1D26" />
 
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="37dp"
+                android:layout_marginTop="30dp"
+                android:theme="@style/Widget.AppCompat.ProgressBar"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/button"
+                style="@style/AccentButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="37dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="30dp"
+                android:text="Sign up" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -109,13 +148,13 @@
                     android:textAppearance="@style/AvenirRegular.13.Gray" />
 
                 <TextView
-                    android:clickable="true"
-                    android:background="?selectableItemBackground"
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:text="Sign up"
+                    android:background="?selectableItemBackground"
+                    android:clickable="true"
+                    android:text="Sign in"
                     android:textAppearance="@style/AvenirRegular.13.Accent" />
 
             </LinearLayout>
