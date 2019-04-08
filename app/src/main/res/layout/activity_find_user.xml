@@ -21,18 +21,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="Create conversation"
+                android:text="Find user"
                 android:textAppearance="@style/AvenirRegular.16.White" />
 
-            <ImageView
-                android:id="@+id/create_group_submit_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|end"
-                android:layout_marginEnd="16dp"
-                android:background="?selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:src="@drawable/ic_check_white_24dp" />
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
@@ -48,43 +39,23 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/create_group_title_et"
+                android:id="@+id/find_user_et"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:backgroundTint="#191D1D26"
-                android:ems="20"
-                android:hint="Group name"
-                android:inputType="textEmailAddress"
-                android:lines="1"
-                android:textAppearance="@style/AvenirRegular.15.Dark"
-                android:textColorHint="#771D1D26" />
-
-            <EditText
-                android:id="@+id/create_group_description_et"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="#191D1D26"
-                android:gravity="top"
-                android:hint="Description"
+                android:ems="10"
+                android:hint="User name"
                 android:inputType="textEmailAddress"
                 android:textAppearance="@style/AvenirRegular.15.Dark"
                 android:textColorHint="#771D1D26" />
-
-            <include
-                android:id="@+id/create_group_add_member_btn"
-                layout="@layout/view_add_user" />
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/create_group_users_rv"
+                android:id="@+id/find_user_rv"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
                 tools:listitem="@layout/view_user" />
         </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.suhotrub.conversations.interactor.user
 
+import com.suhotrub.conversations.model.user.UserDto
 import com.suhotrub.conversations.model.user.UserLoginDto
 import com.suhotrub.conversations.model.user.UserSignupDto
 import io.reactivex.Observable
@@ -31,6 +32,6 @@ interface UsersApi {
             @Query("login") login: String,
             @Query("pageSize") pageSize: Int,
             @Query("page") page: Int
-    ): Observable<List<UserSignupDto>>
+    ): Observable<List<UserDto>>
 
 }

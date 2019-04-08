@@ -3,15 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="95dp"
-    android:foreground="?selectableItemBackground"
-    android:clickable="true"
-    android:padding="15dp">
+    android:layout_height="64dp"
+    android:background="?selectableItemBackground"
+
+    android:paddingBottom="8dp"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
+    android:paddingTop="8dp">
 
     <ImageView
         android:id="@+id/chat_avatar"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_placeholder_circle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,8 +24,9 @@
         android:id="@+id/chat_status"
         android:layout_width="5dp"
         android:layout_height="5dp"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="16dp"
         android:background="@drawable/bg_circle_red"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/chat_name"
         app:layout_constraintStart_toEndOf="@id/chat_avatar"
         app:layout_constraintTop_toTopOf="@id/chat_name" />
@@ -30,45 +35,31 @@
         android:id="@+id/chat_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:ellipsize="end"
         android:lines="1"
         android:textAppearance="@style/AvenirRegular.16.Dark"
+        app:layout_constraintBottom_toTopOf="@+id/chat_message"
         app:layout_constraintEnd_toStartOf="@id/chat_time"
         app:layout_constraintStart_toEndOf="@id/chat_status"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginStart="15dp"
-        tools:text="Gorbachev Alexey" />
-
-    <TextView
-        android:id="@+id/chat_status_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="2dp"
-        android:ellipsize="end"
-        android:lines="1"
-        android:textAppearance="@style/AvenirRegular.13.Dark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/chat_avatar"
-        app:layout_constraintTop_toBottomOf="@id/chat_name"
-        tools:text="Rabotayu za edu" />
+        app:layout_goneMarginStart="16dp"
+        tools:text="testification" />
 
     <TextView
         android:id="@+id/chat_message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginStart="16dp"
         android:ellipsize="end"
         android:lines="1"
-        android:textAppearance="@style/AvenirRegular.13.Gray"
+        android:textAppearance="@style/AvenirRegular.16.Gray"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/chat_avatar"
-        app:layout_constraintTop_toBottomOf="@id/chat_status_text"
-        tools:text="Slish chmo vihodi ebat tebya budu" />
+        app:layout_constraintTop_toBottomOf="@+id/chat_name"
+        tools:text="authorization" />
 
     <TextView
         android:id="@+id/chat_time"

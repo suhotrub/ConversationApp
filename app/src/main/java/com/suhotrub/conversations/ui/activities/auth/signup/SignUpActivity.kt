@@ -15,8 +15,10 @@ import com.suhotrub.conversations.ui.activities.main.MainActivity
 import com.suhotrub.conversations.ui.util.recycler.LoadState
 import com.suhotrub.conversations.ui.util.ui.config
 import com.suhotrub.conversations.ui.util.ui.setVisibleOrGone
+import com.suhotrub.conversations.ui.util.ui.showError
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import retrofit2.HttpException
 import javax.inject.Inject
 
 
@@ -63,27 +65,12 @@ class SignUpActivity : MvpAppCompatActivity(), SignUpView {
         progressBar.setVisibleOrGone(loadState == LoadState.MAIN_LOADING)
     }
 
-    override fun showValidationError() {
-        Snackbar
-                .make(
-                        root,
-                        "Проверьте правильность заполнения полей",
-                        Snackbar.LENGTH_SHORT
-                )
-                .config(this@SignUpActivity)
-                .show()
-    }
+    override fun showValidationError() =
+            showError("Проверьте правильность заполнения полей")
 
-    override fun showError(t: Throwable) {
-        Snackbar
-                .make(
-                        root,
-                        t.message.toString(),
-                        Snackbar.LENGTH_SHORT
-                )
-                .config(this@SignUpActivity)
-                .show()
-    }
+
+    override fun showErrorSnackbar(t: Throwable) =
+            showError(t)
 
     override fun navigateAfterLogin() {
         startActivity(Intent(this@SignUpActivity, MainActivity::class.java))

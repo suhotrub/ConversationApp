@@ -10,7 +10,7 @@ class GroupsInteractor @Inject constructor(
 
     fun createGroup(
             name: String,
-            description: String,
+            description: String?,
             avatarLink: String
     ) = groupsRepository.createGroup(
             name,

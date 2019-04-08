@@ -14,14 +14,6 @@ import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Конвертер запросов в Observable. Также выполняет следующие функции:
- *
- * * Конвертирует IOException в NoConnectionException;
- * * В случае HttpException с кодом 304 возвращает пустой Observable;
- * * В случае HttpException c кодом 401 и если пользователь был авторизован - сбрасывает все данные пользователя и открывает экран авторизации
- * * В случае HttpException c кодом 400 перезапрашивает токен и повторяет предыдущий запрос
- */
 @Singleton
 class CallAdapterFactory @Inject constructor() : CallAdapter.Factory() {
 

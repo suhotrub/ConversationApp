@@ -12,7 +12,7 @@ class GroupsRepository @Inject constructor(
 
     fun createGroup(
             name: String,
-            description: String,
+            description: String?,
             avatarLink: String
     ) = groupsApi.create(
             GroupCreateDto(

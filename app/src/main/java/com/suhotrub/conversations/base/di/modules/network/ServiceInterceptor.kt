@@ -1,9 +1,8 @@
 package com.suhotrub.conversations.base.di.modules.network;
 
+import com.suhotrub.conversations.interactor.user.TokenStorage
 import okhttp3.Interceptor
-import okhttp3.Request
 import okhttp3.Response
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,9 +12,10 @@ import javax.inject.Singleton
  * * локаль устройства.
  */
 @Singleton
-class ServiceInterceptor @Inject constructor() : Interceptor {
+class ServiceInterceptor @Inject constructor(
+        private val tokenStorage: TokenStorage
+) : Interceptor {
 
-    private lateinit var token: String
     private val HEADER_AUTH_KEY = "Authorization"
     private val HEADER_DEVICE_KEY = "FM-Device-Id"
     private val HEADER_DEVICE_LOCATION_LAT = "FM-Device-Location-Lat"
@@ -30,9 +30,11 @@ class ServiceInterceptor @Inject constructor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
-        /*if (originalRequest.headers().get(HEADER_AUTH_KEY) != null) {
+
+        if (originalRequest.headers().get(HEADER_AUTH_KEY) != null) {
             return chain.proceed(originalRequest)
         }
+        /*
 
         val headersBuilder = originalRequest.headers().newBuilder()
 
@@ -43,6 +45,20 @@ class ServiceInterceptor @Inject constructor() : Interceptor {
                 .add(HEADER_LANG, getLanguage())*/
 
 
-        return chain.proceed(originalRequest)
+
+
+
+        return chain.proceed(
+                originalRequest
+                        .newBuilder()
+                        .headers(
+                                originalRequest
+                                        .headers()
+                                        .newBuilder()
+                                        .add(HEADER_AUTH_KEY, "Bearer ${tokenStorage.getToken()}")
+                                        .build()
+                        )
+                        .build()
+        )
     }
 }

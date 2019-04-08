@@ -4,11 +4,11 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.suhotrub.conversations.base.di.scopes.ActivityScope
 import com.suhotrub.conversations.interactor.user.UsersInteractor
-import com.suhotrub.conversations.ui.activities.auth.signin.SignInView
 import com.suhotrub.conversations.ui.util.recycler.LoadState
 import com.suhotrub.conversations.ui.util.subscribe
 import com.suhotrub.conversations.ui.util.subscribeIoHandleError
 import io.reactivex.Observable
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @ActivityScope
@@ -20,29 +20,19 @@ class SignUpPresenter @Inject constructor(
     val screenModel = SignUpScreenModel()
 
     fun observeLogin(textObservable: Observable<String>) =
-            subscribe(textObservable.distinctUntilChanged()) {
-                screenModel.login = it
-            }
+            subscribe(textObservable.distinctUntilChanged(), screenModel::login::set)
 
     fun observePassword(textObservable: Observable<String>) =
-            subscribe(textObservable.distinctUntilChanged()) {
-                screenModel.password = it
-            }
+            subscribe(textObservable.distinctUntilChanged(), screenModel::password::set)
 
     fun observePasswordAgain(textObservable: Observable<String>) =
-            subscribe(textObservable.distinctUntilChanged()) {
-                screenModel.passwordAgain = it
-            }
+            subscribe(textObservable.distinctUntilChanged(), screenModel::passwordAgain::set)
 
     fun observeName(textObservable: Observable<String>) =
-            subscribe(textObservable.distinctUntilChanged()) {
-                screenModel.name = it
-            }
+            subscribe(textObservable.distinctUntilChanged(), screenModel::name::set)
 
     fun observeSurname(textObservable: Observable<String>) =
-            subscribe(textObservable.distinctUntilChanged()) {
-                screenModel.surname = it
-            }
+            subscribe(textObservable.distinctUntilChanged(), screenModel::surname::set)
 
     private fun validateFields(): Boolean {
         if (
@@ -76,7 +66,7 @@ class SignUpPresenter @Inject constructor(
                         screenModel.loadState = LoadState.NONE
 
                         viewState.renderLoadState(screenModel.loadState)
-                        viewState.showError(it)
+                        viewState.showErrorSnackbar(it)
                     }
             )
         }

@@ -2,13 +2,16 @@ package com.suhotrub.conversations.interactor.groups
 
 import com.suhotrub.conversations.model.group.GroupCreateDto
 import com.suhotrub.conversations.model.group.GroupDto
+import com.suhotrub.conversations.model.user.UserDto
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
+import javax.inject.Singleton
 
+@Singleton
 interface GroupsApi {
 
 
@@ -39,7 +42,7 @@ interface GroupsApi {
             @Query("groupsName") groupName: String,
             @Query("pageSize") pageSize: Int,
             @Query("page") page: Int
-    ): Observable<String>
+    ): Observable<List<UserDto>>
 
     @GET("/Groups/find")
     fun getGroupsByName(

@@ -2,9 +2,6 @@ package com.suhotrub.conversations.ui.activities.auth.signin
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
-import android.view.View
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -14,11 +11,11 @@ import com.suhotrub.conversations.R
 import com.suhotrub.conversations.ui.activities.auth.signup.SignUpActivity
 import com.suhotrub.conversations.ui.activities.main.MainActivity
 import com.suhotrub.conversations.ui.util.recycler.LoadState
-import com.suhotrub.conversations.ui.util.ui.config
 import com.suhotrub.conversations.ui.util.ui.setVisibleOrGone
+import com.suhotrub.conversations.ui.util.ui.showError
 import dagger.android.AndroidInjection
-import io.reactivex.android.plugins.RxAndroidPlugins
 import kotlinx.android.synthetic.main.activity_sign_in.*
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class SignInActivity : MvpAppCompatActivity(), SignInView {
@@ -55,27 +52,13 @@ class SignInActivity : MvpAppCompatActivity(), SignInView {
         button.setVisibleOrGone(loadState != LoadState.MAIN_LOADING)
     }
 
-    override fun showValidationError() {
-        Snackbar
-                .make(
-                        root,
-                        "Проверьте правильность заполнения полей",
-                        Snackbar.LENGTH_SHORT
-                )
-                .config(this@SignInActivity)
-                .show()
-    }
+    override fun showValidationError() =
+            showError("Проверьте правильность заполнения полей")
 
-    override fun showError(t: Throwable) {
-        Snackbar
-                .make(
-                        root,
-                        t.message.toString(),
-                        Snackbar.LENGTH_SHORT
-                )
-                .config(this@SignInActivity)
-                .show()
-    }
+
+    override fun showErrorSnackbar(t: Throwable) =
+            showError(t)
+
 
     override fun navigateAfterLogin() {
         startActivity(Intent(this@SignInActivity, MainActivity::class.java))

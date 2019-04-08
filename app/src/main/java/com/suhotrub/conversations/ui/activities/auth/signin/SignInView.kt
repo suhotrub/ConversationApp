@@ -5,6 +5,7 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.suhotrub.conversations.ui.util.recycler.LoadState
+import retrofit2.HttpException
 
 interface SignInView : MvpView {
 
@@ -15,7 +16,7 @@ interface SignInView : MvpView {
     fun showValidationError()
 
     @StateStrategyType(SkipStrategy::class)
-    fun showError(t:Throwable)
+    fun showErrorSnackbar(t: Throwable)
 
     @StateStrategyType(SkipStrategy::class)
     fun navigateAfterLogin()

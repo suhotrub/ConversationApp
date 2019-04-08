@@ -93,6 +93,9 @@
     <style name="AvenirRegular.16.Dark">
         <item name="android:textColor">#1D1D26</item>
     </style>
+    <style name="AvenirRegular.16.Gray">
+        <item name="android:textColor">#7F1D1D26</item>
+    </style>
     <style name="AvenirRegular.16.Accent">
         <item name="android:textColor">@color/colorAccent</item>
     </style>
