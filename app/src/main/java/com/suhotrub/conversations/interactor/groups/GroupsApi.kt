@@ -2,7 +2,9 @@ package com.suhotrub.conversations.interactor.groups
 
 import com.suhotrub.conversations.model.group.GroupCreateDto
 import com.suhotrub.conversations.model.group.GroupDto
+import com.suhotrub.conversations.model.group.GroupsDto
 import com.suhotrub.conversations.model.user.UserDto
+import com.suhotrub.conversations.model.user.UsersDto
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.http.Body
@@ -29,26 +31,26 @@ interface GroupsApi {
     fun getJoinedGroups(
             @Query("pageSize") pageSize: Int,
             @Query("page") page: Int
-    ): Observable<List<GroupDto>>
+    ): Observable<GroupsDto>
 
     @GET("/Groups/created")
     fun getCreatedGroups(
             @Query("pageSize") pageSize: Int,
             @Query("page") page: Int
-    ): Observable<List<GroupDto>>
+    ): Observable<GroupsDto>
 
     @GET("/Groups/participants")
     fun getGroupParticicpants(
-            @Query("groupsName") groupName: String,
+            @Query("groupGuid") groupName: String,
             @Query("pageSize") pageSize: Int,
             @Query("page") page: Int
-    ): Observable<List<UserDto>>
+    ): Observable<UsersDto>
 
     @GET("/Groups/find")
     fun getGroupsByName(
-            @Query("name") name: String,
+            @Query("pattern") name: String,
             @Query("pageSize") pageSize: Int,
             @Query("page") page: Int
-    ): Observable<List<GroupDto>>
+    ): Observable<GroupsDto>
 
 }

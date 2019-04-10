@@ -4,7 +4,8 @@ import com.suhotrub.conversations.base.App
 import com.suhotrub.conversations.base.di.modules.network.NetworkModule
 import com.suhotrub.conversations.base.di.modules.network.OkHttpModule
 import com.suhotrub.conversations.interactor.groups.GroupsModule
-import com.suhotrub.conversations.interactor.user.UsersApi
+import com.suhotrub.conversations.interactor.messages.MessagesModule
+import com.suhotrub.conversations.interactor.signalr.MainHubModule
 import com.suhotrub.conversations.interactor.user.UsersModule
 import dagger.BindsInstance
 import dagger.Component
@@ -22,7 +23,9 @@ import javax.inject.Singleton
     (OkHttpModule::class),
     (ActivitiesModule::class),
     (UsersModule::class),
-    (GroupsModule::class)
+    (GroupsModule::class),
+    (MainHubModule::class),
+    (MessagesModule::class)
 ])
 
 interface AppComponent : AndroidInjector<App> {

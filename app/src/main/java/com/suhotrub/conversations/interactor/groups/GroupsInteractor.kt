@@ -27,7 +27,7 @@ class GroupsInteractor @Inject constructor(
     fun getCreatedGroups(offset: Int) =
             groupsRepository.getCreatedGroups(offset)
 
-    fun getGroupParticipants(groupName: String, offset: Int) =
-            groupsRepository.getGroupParticipants(groupName, offset)
+    fun getGroupParticipants(groupGuid: String, offset: Int) =
+            groupsRepository.getGroupParticipants(groupGuid, offset)
 
 }

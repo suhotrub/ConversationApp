@@ -25,19 +25,33 @@ class GroupPresenter @Inject constructor(
     }
 
     fun loadMore() {
-        subscribeIoHandleError(groupsInteractor.getGroupParticipants(groupDto.name ?: "", offset),
+        subscribeIoHandleError(groupsInteractor.getGroupParticipants(groupDto.groupGuid, offset),
                 {
 
-                    users.addAll(it)
+                    users.addAll(it.users)
                     viewState.renderUsers(users)
                     offset++
-                    if (it.isEmpty())
+                    if (it.users.isEmpty())
                         viewState.setPaginationState(PaginationState.COMPLETE)
                 },
                 {
                     viewState.showErrorSnackbar(it)
                     viewState.setPaginationState(PaginationState.ERROR)
                 })
+
+        /*subscribeIoHandleError(groupsInteractor.getGroupParticipants(groupDto.groupGuid, offset),
+                {
+
+                    users.addAll(it.users)
+                    viewState.renderUsers(users)
+                    offset++
+                    if (it.users.isEmpty())
+                        viewState.setPaginationState(PaginationState.COMPLETE)
+                },
+                {
+                    viewState.showErrorSnackbar(it)
+                    viewState.setPaginationState(PaginationState.ERROR)
+                })*/
     }
 
     fun reload() {

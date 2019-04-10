@@ -37,11 +37,11 @@ class FindUserPresenter @Inject constructor(
         if (username != null)
             subscribeIoHandleError(usersInteractor.findUsersByLogin(username!!, offset),
                     {
-                        users.addAll(it)
+                        users.addAll(it.users)
                         offset++
                         viewState.renderUsers(users)
 
-                        if (it.isEmpty())
+                        if (it.users.isEmpty())
                             viewState.setPaginationState(PaginationState.COMPLETE)
                     },
                     {

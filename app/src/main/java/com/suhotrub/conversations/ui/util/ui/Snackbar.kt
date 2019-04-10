@@ -33,7 +33,7 @@ fun Snackbar.config(context: Context, @DrawableRes bgDrawableRes: Int): Snackbar
 }
 
 fun Activity.showError(t: Throwable) =
-        showError(
+         showError(
                 listOfNotNull(
                         t.message.toString().ifEmpty { null },
                         (t as? HttpException)?.response()?.errorBody()?.string()?.trim('\"')?.ifEmpty { null }

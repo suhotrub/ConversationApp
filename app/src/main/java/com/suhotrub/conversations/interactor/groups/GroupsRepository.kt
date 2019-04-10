@@ -31,6 +31,6 @@ class GroupsRepository @Inject constructor(
     fun getCreatedGroups(offset: Int) =
             groupsApi.getCreatedGroups(20, offset)
 
-    fun getGroupParticipants(groupName: String, offset: Int) =
-            groupsApi.getGroupParticicpants(groupName, 20, offset)
+    fun getGroupParticipants(groupGuid: String, offset: Int) =
+            groupsApi.getGroupParticicpants(groupGuid, 20, offset)
 }

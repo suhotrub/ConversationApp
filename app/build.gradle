@@ -78,4 +78,9 @@ dependencies {
     compile 'com.jaeger.statusbarutil:library:1.5.1'
 
     implementation 'com.android.support:design:27.1.0'
+
+    implementation 'org.slf4j:slf4j-jdk14:1.7.25'
+    implementation 'com.microsoft.signalr:signalr:1.0.0'
+    implementation 'com.smartarmenia:dotnetcoresignalrclientjava:1.14'
+
 }

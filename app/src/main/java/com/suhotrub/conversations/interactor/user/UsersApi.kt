@@ -1,8 +1,8 @@
 package com.suhotrub.conversations.interactor.user
 
-import com.suhotrub.conversations.model.user.UserDto
 import com.suhotrub.conversations.model.user.UserLoginDto
 import com.suhotrub.conversations.model.user.UserSignupDto
+import com.suhotrub.conversations.model.user.UsersDto
 import io.reactivex.Observable
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -29,9 +29,9 @@ interface UsersApi {
 
     @GET("/Users/find")
     fun getUsersByLogin(
-            @Query("login") login: String,
+            @Query("pattern") login: String,
             @Query("pageSize") pageSize: Int,
             @Query("page") page: Int
-    ): Observable<List<UserDto>>
+    ): Observable<UsersDto>
 
 }
