@@ -4,7 +4,7 @@ import com.suhotrub.conversations.model.user.UserDto
 
 data class MessageDto(
         val text:String,
-        val groupsName:String,
-        val time:String,
+        val groupName:String,
+        val time:String?,
         val user:UserDto
 )

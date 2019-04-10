@@ -13,10 +13,12 @@ class GroupsRepository @Inject constructor(
     fun createGroup(
             name: String,
             description: String?,
-            avatarLink: String
+            avatarLink: String,
+            users:List<String>
     ) = groupsApi.create(
             GroupCreateDto(
                     name,
+                    users,
                     description,
                     avatarLink
             )

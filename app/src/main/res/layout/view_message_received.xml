@@ -20,12 +20,12 @@
         android:layout_marginEnd="48dp"
         android:layout_marginTop="2dp"
         android:background="@drawable/bg_message_received_single"
-        android:elevation="2dp"
+        android:elevation="1dp"
         android:orientation="vertical"
         android:padding="8dp">
 
         <TextView
-            android:id="@+id/user_name"
+            android:id="@+id/message_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lines="1"
@@ -33,19 +33,19 @@
             android:textAppearance="@style/AvenirRegular.13.Accent" />
 
         <TextView
-            android:id="@+id/message"
+            android:id="@+id/message_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lorem ipsum dolore set ametu uh suka kak zhe huevo ne proebat bi kursach bleat sukapizdo nauy bleat uf bly"
+            android:text="Lorem ipsum dolore"
             android:textAppearance="@style/AvenirRegular.15.Dark" />
 
         <TextView
-            android:id="@+id/time"
+            android:id="@+id/message_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:lines="1"
             android:text="23:48"
-            android:textAppearance="@style/AvenirRegular.13.Gray" />
+            android:textAppearance="@style/AvenirRegular.10.Gray" />
     </LinearLayout>
 </LinearLayout>

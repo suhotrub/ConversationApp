@@ -58,8 +58,47 @@
         android:id="@+id/group_users_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
+        android:background="#e4e3fc"
         android:clipToPadding="false"
+        android:gravity="bottom"
         android:paddingTop="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom"
+        android:elevation="6dp"
+        android:background="@android:color/white"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/message_et"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:background="@android:color/white"
+            android:ems="10"
+            android:hint="Send message"
+            android:inputType="textShortMessage"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:textAppearance="@style/AvenirRegular.16.Dark"
+            android:textColor="#424242"
+            android:textColorHint="#7F1D1D26" />
+
+        <ImageView
+            android:id="@+id/send_message_btn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:clickable="true"
+            android:layout_gravity="center"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="16dp"
+            app:srcCompat="@drawable/ic_send_gray_24dp" />
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

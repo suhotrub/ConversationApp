@@ -11,11 +11,13 @@ class GroupsInteractor @Inject constructor(
     fun createGroup(
             name: String,
             description: String?,
-            avatarLink: String
+            avatarLink: String,
+            users:List<String>
     ) = groupsRepository.createGroup(
             name,
             description,
-            avatarLink
+            avatarLink,
+            users
     )
 
     fun joinGroup(groupName: String) =

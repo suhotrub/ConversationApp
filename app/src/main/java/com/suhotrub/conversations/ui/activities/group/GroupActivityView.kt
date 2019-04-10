@@ -5,14 +5,13 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.suhotrub.conversations.model.group.GroupDto
-import com.suhotrub.conversations.model.user.UserDto
+import com.suhotrub.conversations.model.messages.MessageDto
 import com.suhotrub.conversations.ui.util.recycler.PaginationState
-import retrofit2.HttpException
 
 interface GroupActivityView : MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy::class)
-    fun renderUsers(users: List<UserDto>)
+    fun renderMessages(messages: List<MessageDto>)
 
     @StateStrategyType(AddToEndSingleStrategy::class)
     fun renderGroup(groupDto: GroupDto)
@@ -22,4 +21,10 @@ interface GroupActivityView : MvpView {
 
     @StateStrategyType(SkipStrategy::class)
     fun setPaginationState(paginationState: PaginationState)
+
+    @StateStrategyType(SkipStrategy::class)
+    fun clearMessage()
+
+    @StateStrategyType(SkipStrategy::class)
+    fun scrollToBottom()
 }

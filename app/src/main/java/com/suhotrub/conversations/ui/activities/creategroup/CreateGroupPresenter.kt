@@ -7,7 +7,6 @@ import com.suhotrub.conversations.model.user.UserDto
 import com.suhotrub.conversations.ui.util.subscribe
 import com.suhotrub.conversations.ui.util.subscribeIoHandleError
 import io.reactivex.Observable
-import retrofit2.HttpException
 import javax.inject.Inject
 
 @InjectViewState
@@ -43,7 +42,7 @@ class CreateGroupPresenter @Inject constructor(
 
     fun submit() {
         if (validateField()) {
-            subscribeIoHandleError(groupsInteractor.createGroup(title!!, description, ""),
+            subscribeIoHandleError(groupsInteractor.createGroup(title!!, description, "", users.map(UserDto::userGuid)),
                     {
                         viewState.finish()
                     },

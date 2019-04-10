@@ -1,5 +1,6 @@
 package com.suhotrub.conversations.interactor.user
 
+import com.suhotrub.conversations.model.user.UserDto
 import com.suhotrub.conversations.model.user.UserLoginDto
 import com.suhotrub.conversations.model.user.UserSignupDto
 import com.suhotrub.conversations.model.user.UsersDto
@@ -33,5 +34,8 @@ interface UsersApi {
             @Query("pageSize") pageSize: Int,
             @Query("page") page: Int
     ): Observable<UsersDto>
+
+    @GET("/Users/current")
+    fun getCurrentUser(): Observable<UserDto>
 
 }

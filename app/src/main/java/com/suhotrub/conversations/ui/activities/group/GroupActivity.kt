@@ -4,21 +4,24 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.jakewharton.rxbinding2.widget.RxTextView
 import com.suhotrub.conversations.R
+import com.suhotrub.conversations.interactor.user.UsersRepository
 import com.suhotrub.conversations.model.group.GroupDto
-import com.suhotrub.conversations.model.user.UserDto
+import com.suhotrub.conversations.model.messages.MessageDto
 import com.suhotrub.conversations.ui.util.recycler.ItemList
 import com.suhotrub.conversations.ui.util.recycler.PaginationState
 import com.suhotrub.conversations.ui.util.recycler.PaginationableAdapter
 import com.suhotrub.conversations.ui.util.ui.setTextOrGone
 import com.suhotrub.conversations.ui.util.ui.showError
-import com.suhotrub.conversations.ui.util.widget.user.UserItemController
+import com.suhotrub.conversations.ui.util.widget.message.MessageItemController
+import com.suhotrub.conversations.ui.util.widget.message.SentMessageItemController
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_group.*
-import retrofit2.HttpException
 import javax.inject.Inject
 
 class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
@@ -28,11 +31,17 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
     @InjectPresenter
     lateinit var presenter: GroupPresenter
 
+    @Inject
+    lateinit var usersRepository: UsersRepository
+
     @ProvidePresenter
     fun providePresenter() = presenter
 
     private val adapter = PaginationableAdapter()
-    private val userItemController = UserItemController({})
+    private val messageItemController = MessageItemController({})
+    private val sentMessageItemController = SentMessageItemController({})
+
+    var canScroll = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -40,8 +49,16 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
 
         setContentView(R.layout.activity_group)
 
-        group_users_rv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        group_users_rv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true).apply { stackFromEnd = true }
         group_users_rv.adapter = adapter
+
+        group_users_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                canScroll = ((group_users_rv.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition()
+                         ?: 0) < 2
+
+            }
+        })
 
         adapter.setOnShowMoreListener {
             adapter.setState(PaginationState.LOADING)
@@ -54,6 +71,11 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
+
+        presenter.observeMessage(RxTextView.textChanges(message_et).map(CharSequence::toString))
+        send_message_btn.setOnClickListener {
+            presenter.sendMessage()
+        }
     }
 
     override fun renderGroup(groupDto: GroupDto) {
@@ -63,13 +85,33 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
     override fun showErrorSnackbar(t: Throwable) =
             showError(t)
 
-    override fun renderUsers(users: List<UserDto>) {
+    override fun renderMessages(messages: List<MessageDto>) {
         adapter.setItems(
                 ItemList.create()
-                        .addAll(users, userItemController)
+                        .apply {
+                            messages.forEach {
+                                add(it,
+                                        if (it.user.login != usersRepository.getCurrentUser()?.login)
+                                            messageItemController
+                                        else
+                                            sentMessageItemController
+                                )
+                            }
+                        }
         )
-        group_users_count_tv.setTextOrGone("${users.size} долбаёбов")
+
+        //group_users_count_tv.setTextOrGone("${users.size} долбаёбов")
         adapter.setState(PaginationState.READY)
+    }
+
+    override fun clearMessage() {
+        message_et.text = null
+    }
+
+    override fun scrollToBottom() {
+        if (canScroll) {
+            group_users_rv.smoothScrollToPosition(0)
+        }
     }
 
     override fun setPaginationState(paginationState: PaginationState) =

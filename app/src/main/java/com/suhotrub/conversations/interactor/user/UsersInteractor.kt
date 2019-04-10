@@ -40,4 +40,7 @@ class UsersInteractor @Inject constructor(
             offset
     )
 
+
+    fun getCurrent() =
+            usersRepository.getCurrent()
 }

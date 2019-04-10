@@ -1,20 +1,23 @@
 package com.suhotrub.conversations.interactor.user
 
-import android.content.Context
+import com.suhotrub.conversations.interactor.signalr.MainHubInteractor
+import com.suhotrub.conversations.model.user.UserDto
 import com.suhotrub.conversations.model.user.UserLoginDto
 import com.suhotrub.conversations.model.user.UserSignupDto
+import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class UsersRepository @Inject constructor(
-        val context: Context,
-        val usersApi: UsersApi,
-        val tokenStorage: TokenStorage
+        private val usersApi: UsersApi,
+        private val tokenStorage: TokenStorage,
+        private val mainHubInteractor: MainHubInteractor
 ) {
+    private var currentUser: UserDto? = null
 
-    fun getToken() =
-            tokenStorage.getToken()
+    fun getCurrentUser() = currentUser
+
     fun isLoggedIn() =
             tokenStorage.isLoggedIn()
 
@@ -30,9 +33,10 @@ class UsersRepository @Inject constructor(
                     name,
                     surname
             )
-    ).map {
+    ).doOnNext {
+        currentUser = null
+        mainHubInteractor.createHubConnection()
         tokenStorage.setToken(it)
-        it
     }
 
     fun login(
@@ -43,9 +47,10 @@ class UsersRepository @Inject constructor(
                     login,
                     password
             )
-    ).map {
+    ).doOnNext {
+        currentUser = null
+        mainHubInteractor.createHubConnection()
         tokenStorage.setToken(it)
-        it
     }
 
     fun getUsername() =
@@ -54,6 +59,17 @@ class UsersRepository @Inject constructor(
     fun findUsersByName(name: String, offset: Int) =
             usersApi.getUsersByLogin(name, 20, offset)
 
+    fun getCurrent() =
+            usersApi.getCurrentUser()
+                    .doOnNext {
+                        currentUser = it
+                    }
+                    .doOnError {
+                        if ((it as? HttpException)?.code() == 401) {
+                            mainHubInteractor.stopHubConnection()
+                            tokenStorage.setToken("")
+                        }
+                    }
 
 }
 
