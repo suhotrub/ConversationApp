@@ -7,20 +7,26 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingTop="25dp"
+        android:transitionName="appbar">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
+            android:transitionName="toolbar"
             app:navigationIcon="@drawable/ic_arrow_back_white_transparent_24dp">
 
             <LinearLayout
+                android:id="@+id/group_header"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
+                android:background="?selectableItemBackground"
                 android:clickable="true"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
@@ -29,7 +35,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:text="Пиздатая конфа"
-                    android:textAppearance="@style/AvenirRegular.16.White" />
+                    android:textAppearance="@style/AvenirRegular.16.White"
+                    android:transitionName="group_title_tv" />
 
                 <TextView
                     android:id="@+id/group_users_count_tv"
@@ -38,7 +45,8 @@
                     android:layout_gravity="start"
                     android:alpha="0.6"
                     android:text="6 долбаебов"
-                    android:textAppearance="@style/AvenirRegular.13.White" />
+                    android:textAppearance="@style/AvenirRegular.13.White"
+                    android:transitionName="group_users_count_tv" />
 
             </LinearLayout>
 
@@ -59,9 +67,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="60dp"
-        android:background="#e4e3fc"
+        android:background="#efefff"
         android:clipToPadding="false"
         android:gravity="bottom"
+        android:paddingBottom="8dp"
         android:paddingTop="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -69,8 +78,8 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_gravity="bottom"
-        android:elevation="6dp"
         android:background="@android:color/white"
+        android:elevation="6dp"
         android:orientation="horizontal">
 
         <EditText
@@ -83,7 +92,7 @@
             android:background="@android:color/white"
             android:ems="10"
             android:hint="Send message"
-            android:inputType="textShortMessage"
+            android:inputType="textCapSentences"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:textAppearance="@style/AvenirRegular.16.Dark"
@@ -94,9 +103,9 @@
             android:id="@+id/send_message_btn"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:clickable="true"
             android:layout_gravity="center"
             android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
             android:padding="16dp"
             app:srcCompat="@drawable/ic_send_gray_24dp" />
     </LinearLayout>

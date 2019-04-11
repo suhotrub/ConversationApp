@@ -34,10 +34,12 @@
         <activity
             android:name=".ui.activities.auth.signin.SignInActivity"
             android:configChanges="orientation"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activities.auth.signup.SignUpActivity"
             android:configChanges="orientation"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activities.logout.LogoutActivity"
@@ -47,15 +49,19 @@
         <activity
             android:name=".ui.activities.creategroup.CreateGroupActivity"
             android:configChanges="orientation"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activities.finduser.FindUserActivity"
             android:configChanges="orientation"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activities.group.GroupActivity"
             android:configChanges="orientation"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
+        <activity android:name=".ui.activities.groupinfo.GroupInfoActivity" />
     </application>
 
 </manifest>

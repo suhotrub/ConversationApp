@@ -1,18 +1,30 @@
 package com.suhotrub.conversations.ui.activities.group
 
+import android.app.SharedElementCallback
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.transition.TransitionSet
+import android.support.v4.app.ActivityOptionsCompat
+import android.support.v4.content.res.ResourcesCompat
+import android.support.v4.util.Pair
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.transition.Fade
+import android.transition.Slide
+import android.view.Gravity
+import android.view.View
+import android.view.Window
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.jaeger.library.StatusBarUtil
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.suhotrub.conversations.R
 import com.suhotrub.conversations.interactor.user.UsersRepository
 import com.suhotrub.conversations.model.group.GroupDto
 import com.suhotrub.conversations.model.messages.MessageDto
+import com.suhotrub.conversations.ui.activities.groupinfo.GroupInfoActivity
 import com.suhotrub.conversations.ui.util.recycler.ItemList
 import com.suhotrub.conversations.ui.util.recycler.PaginationState
 import com.suhotrub.conversations.ui.util.recycler.PaginationableAdapter
@@ -46,6 +58,16 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        val fade = Fade()
+        fade.excludeTarget(R.id.appbar, true)
+        fade.excludeTarget(R.id.toolbar, true)
+
+        window.enterTransition = fade
+        window.exitTransition = fade
+
+        window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+
+        StatusBarUtil.setTranslucentForCoordinatorLayout(this, ResourcesCompat.getColor(resources, R.color.colorPrimary, null))
 
         setContentView(R.layout.activity_group)
 
@@ -55,7 +77,7 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
         group_users_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 canScroll = ((group_users_rv.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition()
-                         ?: 0) < 2
+                        ?: 0) < 2
 
             }
         })
@@ -65,6 +87,19 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
             presenter.loadMore()
         }
 
+
+        group_header.setOnClickListener {
+            val intent = GroupInfoActivity.prepareIntent(this,intent.getParcelableExtra<GroupDto>("EXTRA_FIRST") ?: GroupDto())
+            startActivity(intent,
+                    ActivityOptionsCompat
+                            .makeSceneTransitionAnimation(
+                                    this,
+                                    Pair.create(appbar as View, "appbar"),
+                                    Pair.create(group_title_tv as View, "group_title_tv"),
+                                    Pair.create(group_users_count_tv as View, "group_users_count_tv")
+                            ).toBundle()
+            )
+        }
 
         adapter.setState(PaginationState.READY)
 

@@ -7,6 +7,8 @@ import com.suhotrub.conversations.ui.activities.creategroup.CreateGroupActivity
 import com.suhotrub.conversations.ui.activities.finduser.FindUserActivity
 import com.suhotrub.conversations.ui.activities.group.GroupActivity
 import com.suhotrub.conversations.ui.activities.group.GroupModule
+import com.suhotrub.conversations.ui.activities.groupinfo.GroupInfoActivity
+import com.suhotrub.conversations.ui.activities.groupinfo.GroupInfoModule
 import com.suhotrub.conversations.ui.activities.main.MainActivity
 import com.suhotrub.conversations.ui.activities.main.MainModule
 import com.suhotrub.conversations.ui.activities.splash.SplashActivity
@@ -43,4 +45,8 @@ abstract class ActivitiesModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = [(GroupModule::class)])
     abstract fun bindGroupActivity(): GroupActivity
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [(GroupInfoModule::class)])
+    abstract fun bindGroupInfoActivity(): GroupInfoActivity
 }

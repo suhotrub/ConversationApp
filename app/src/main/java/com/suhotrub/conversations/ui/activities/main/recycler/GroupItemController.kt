@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.item_group.view.*
 
 class GroupItemController(val onClickListener: (GroupDto) -> Unit) : BindableItemController<GroupDto, GroupItemController.Holder>() {
 
-    override fun getItemId(data: GroupDto?) = data?.groupGuid.hashCode().toLong() ?: 0
+    override fun getItemId(data: GroupDto?) = data?.groupGuid?.hashCode()?.toLong() ?: 0
 
     override fun createViewHolder(parent: ViewGroup?) = Holder(parent)
 

@@ -13,7 +13,7 @@
     </style>
 
 
-    <style name="AccentButton" >
+    <style name="AccentButton">
         <item name="android:background">@color/colorAccent</item>
         <item name="android:textAppearance">@style/AvenirLight.16.White</item>
         <item name="android:alpha">0.95</item>
@@ -21,7 +21,7 @@
     </style>
 
 
-    <style name="StrokeButton" >
+    <style name="StrokeButton">
         <item name="android:background">@drawable/bg_stroke_button</item>
         <item name="android:textAppearance">@style/AvenirLight.16.White</item>
         <item name="android:textColor">#7Fffffff</item>
@@ -100,18 +100,55 @@
     <style name="AvenirRegular.16.Dark">
         <item name="android:textColor">#1D1D26</item>
     </style>
+
+    <style name="AvenirRegular.16.Red">
+        <item name="android:textColor">#d64749</item>
+    </style>
+
     <style name="AvenirRegular.16.Gray">
         <item name="android:textColor">#7F1D1D26</item>
     </style>
+
     <style name="AvenirRegular.16.Accent">
         <item name="android:textColor">@color/colorAccent</item>
     </style>
+
     <style name="AvenirRegular.20">
         <item name="android:textSize">20sp</item>
     </style>
 
     <style name="AvenirRegular.20.White">
         <item name="android:textColor">#ffffff</item>
+    </style>
+
+
+    <style name="AvenirMedium">
+        <item name="android:fontFamily">@font/avenir_medium</item>
+    </style>
+
+    <style name="AvenirMedium.13">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="AvenirMedium.13.Dark">
+        <item name="android:textColor">#1D1D26</item>
+    </style>
+
+    <style name="AvenirMedium.13.Gray">
+        <item name="android:textColor">#7F1D1D26</item>
+    </style>
+
+
+    <style name="AvenirMedium.16">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="AvenirMedium.16.Dark">
+        <item name="android:textColor">#1D1D26</item>
+    </style>
+
+    <style name="AvenirMedium.16.Gray">
+        <item name="android:textColor">#7F1D1D26</item>
     </style>
 
 </resources>

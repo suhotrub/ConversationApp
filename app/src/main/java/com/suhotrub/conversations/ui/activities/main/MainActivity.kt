@@ -88,3 +88,6 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     override fun setPaginationState(paginationState: PaginationState) =
             adapter.setState(paginationState)
 }
+
+
+
