@@ -105,7 +105,7 @@ class OkHttpModule {
     internal fun provideOkHttpClient(serviceInterceptor: ServiceInterceptor,
                                      httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
 
-        val okHttpClientBuilder = getUnsafeOkHttpClient() //OkHttpClient.Builder()
+        val okHttpClientBuilder = OkHttpClient.Builder() //getUnsafe()
         okHttpClientBuilder.connectTimeout(timeout, TimeUnit.SECONDS)
         okHttpClientBuilder.readTimeout(timeout, TimeUnit.SECONDS)
         okHttpClientBuilder.writeTimeout(timeout, TimeUnit.SECONDS)
@@ -113,7 +113,7 @@ class OkHttpModule {
         okHttpClientBuilder.addInterceptor(serviceInterceptor)
         okHttpClientBuilder.retryOnConnectionFailure(true)
 
-        return okHttpClientBuilder.build() //enableTls12OnPreLollipop(okHttpClientBuilder).build()
+        return /*okHttpClientBuilder.build()*/ enableTls12OnPreLollipop(okHttpClientBuilder).build()
     }
 
 }

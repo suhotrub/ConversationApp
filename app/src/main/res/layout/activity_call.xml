@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient_background"
+    android:orientation="vertical"
+    app:alignItems="flex_start"
+    app:flexDirection="row"
+    app:justifyContent="space_evenly">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/flex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:justifyContent="space_evenly">
+
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/view1"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_margin="8dp" />
+
+            <!--<org.webrtc.SurfaceViewRenderer
+                android:id="@+id/view2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_margin="8dp" />
+
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/view3"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_margin="8dp" />-->
+        </com.google.android.flexbox.FlexboxLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/top"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone">
+
+            <!--<org.webrtc.SurfaceViewRenderer
+                android:id="@+id/view4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:layout_weight="1" />-->
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <!--<org.webrtc.SurfaceViewRenderer
+                android:id="@+id/view5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:layout_weight="1" />-->
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

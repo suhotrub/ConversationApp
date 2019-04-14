@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:paddingTop="25dp"
-        android:transitionName="appbar">
+        android:elevation="0dp"
+        android:transitionName="appbar"
+        app:elevation="0dp">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -149,4 +151,11 @@
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
+
+    <View
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:background="@drawable/bg_appbar_shadow"
+        android:layout_height="4dp"/>
 </android.support.design.widget.CoordinatorLayout>

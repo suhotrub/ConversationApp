@@ -6,3 +6,4 @@ data class GroupCreateDto(
         val description:String?,
         val avatarLink:String
 )
+

@@ -24,7 +24,7 @@ class NetworkModule {
     @Provides
     @Named("BASE_URL")
     @Singleton
-    fun provideBaseUrl() = "https://176.107.160.64:5000"
+    fun provideBaseUrl() = "https://webrtc.ninja/api/"
 
     @Provides
     @Singleton

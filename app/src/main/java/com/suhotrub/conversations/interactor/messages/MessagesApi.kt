@@ -9,7 +9,7 @@ import javax.inject.Singleton
 @Singleton
 interface MessagesApi {
 
-    @GET("/messages/get_by_group")
+    @GET("messages/get_by_group")
     fun getGroupMessages(
             @Query("groupGuid") groupGuid: String,
             @Query("page") page: Int,

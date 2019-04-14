@@ -35,8 +35,9 @@ class UsersRepository @Inject constructor(
             )
     ).doOnNext {
         currentUser = null
-        mainHubInteractor.createHubConnection()
         tokenStorage.setToken(it)
+        mainHubInteractor.createHubConnection()
+
     }
 
     fun login(
@@ -49,8 +50,8 @@ class UsersRepository @Inject constructor(
             )
     ).doOnNext {
         currentUser = null
-        mainHubInteractor.createHubConnection()
         tokenStorage.setToken(it)
+        mainHubInteractor.createHubConnection()
     }
 
     fun getUsername() =
@@ -66,8 +67,8 @@ class UsersRepository @Inject constructor(
                     }
                     .doOnError {
                         if ((it as? HttpException)?.code() == 401) {
-                            mainHubInteractor.stopHubConnection()
                             tokenStorage.setToken("")
+                            mainHubInteractor.stopHubConnection()
                         }
                     }
 

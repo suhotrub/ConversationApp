@@ -3,6 +3,7 @@ package com.suhotrub.conversations.base.di
 import com.suhotrub.conversations.base.di.scopes.ActivityScope
 import com.suhotrub.conversations.ui.activities.auth.signin.SignInActivity
 import com.suhotrub.conversations.ui.activities.auth.signup.SignUpActivity
+import com.suhotrub.conversations.ui.activities.call.CallActivity
 import com.suhotrub.conversations.ui.activities.creategroup.CreateGroupActivity
 import com.suhotrub.conversations.ui.activities.finduser.FindUserActivity
 import com.suhotrub.conversations.ui.activities.group.GroupActivity
@@ -49,4 +50,8 @@ abstract class ActivitiesModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = [(GroupInfoModule::class)])
     abstract fun bindGroupInfoActivity(): GroupInfoActivity
+
+    @ActivityScope
+    @ContributesAndroidInjector()
+    abstract fun bindCallActivity(): CallActivity
 }

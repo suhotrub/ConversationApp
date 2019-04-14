@@ -15,27 +15,27 @@ import javax.inject.Singleton
 interface UsersApi {
 
 
-    @POST("/Users/signup")
+    @POST("Users/signup")
     fun signUp(
             @Body body: UserSignupDto
     ): Observable<String>
 
-    @POST("/Users/login")
+    @POST("Users/login")
     fun login(
             @Body body: UserLoginDto
     ): Observable<String>
 
-    @GET("/Users/get_username")
+    @GET("Users/get_username")
     fun getUsername(): Observable<String>
 
-    @GET("/Users/find")
+    @GET("Users/find")
     fun getUsersByLogin(
             @Query("pattern") login: String,
             @Query("pageSize") pageSize: Int,
             @Query("page") page: Int
     ): Observable<UsersDto>
 
-    @GET("/Users/current")
+    @GET("Users/current")
     fun getCurrentUser(): Observable<UserDto>
 
 }

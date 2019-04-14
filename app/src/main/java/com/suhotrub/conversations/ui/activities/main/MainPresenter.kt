@@ -2,6 +2,7 @@ package com.suhotrub.conversations.ui.activities.main
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import com.suhotrub.conversations.base.di.scopes.ActivityScope
 import com.suhotrub.conversations.interactor.groups.GroupsInteractor
 import com.suhotrub.conversations.interactor.signalr.MainHubInteractor
 import com.suhotrub.conversations.interactor.user.UsersRepository
@@ -12,6 +13,7 @@ import com.suhotrub.conversations.ui.util.subscribeIoHandleError
 import javax.inject.Inject
 
 @InjectViewState
+@ActivityScope
 class MainPresenter @Inject constructor(
         private val groupsInteractor: GroupsInteractor,
         private val mainHubInteractor: MainHubInteractor,

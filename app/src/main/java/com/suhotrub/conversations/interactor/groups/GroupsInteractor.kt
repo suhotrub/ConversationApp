@@ -20,8 +20,8 @@ class GroupsInteractor @Inject constructor(
             users
     )
 
-    fun joinGroup(groupName: String) =
-            groupsRepository.joinGroup(groupName)
+    fun inviteToGroup(groupGuid: String, userGuid:String) =
+            groupsRepository.inviteToGroup(groupGuid,userGuid)
 
     fun getJoinedGroups(offset: Int) =
             groupsRepository.getJoinedGroups(offset)

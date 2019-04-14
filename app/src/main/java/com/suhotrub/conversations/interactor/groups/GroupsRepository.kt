@@ -1,6 +1,7 @@
 package com.suhotrub.conversations.interactor.groups
 
 import com.suhotrub.conversations.model.group.GroupCreateDto
+import com.suhotrub.conversations.model.group.GroupInviteDto
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -24,8 +25,8 @@ class GroupsRepository @Inject constructor(
             )
     )
 
-    fun joinGroup(groupName: String) =
-            groupsApi.join(groupName)
+    fun inviteToGroup(groupGuid: String, userGuid:String) =
+            groupsApi.invite(GroupInviteDto(userGuid,groupGuid))
 
     fun getJoinedGroups(offset: Int) =
             groupsApi.getJoinedGroups(20, offset)

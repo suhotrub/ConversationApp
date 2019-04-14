@@ -52,3 +52,15 @@ fun Activity.showError(text: String) {
             .config(this)
             .show()
 }
+
+fun Activity.showInfiniteError(text: String) {
+    Snackbar
+            .make(
+                    findViewById(android.R.id.content)
+                            ?: window.decorView.findViewById(android.R.id.content),
+                    text,
+                    Snackbar.LENGTH_INDEFINITE
+            )
+            .config(this)
+            .show()
+}

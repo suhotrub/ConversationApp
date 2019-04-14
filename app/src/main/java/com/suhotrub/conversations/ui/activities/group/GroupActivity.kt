@@ -1,18 +1,14 @@
 package com.suhotrub.conversations.ui.activities.group
 
-import android.app.SharedElementCallback
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.transition.TransitionSet
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.util.Pair
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.transition.Fade
-import android.transition.Slide
-import android.view.Gravity
 import android.view.View
 import android.view.Window
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -24,6 +20,7 @@ import com.suhotrub.conversations.R
 import com.suhotrub.conversations.interactor.user.UsersRepository
 import com.suhotrub.conversations.model.group.GroupDto
 import com.suhotrub.conversations.model.messages.MessageDto
+import com.suhotrub.conversations.ui.activities.call.CallActivity
 import com.suhotrub.conversations.ui.activities.groupinfo.GroupInfoActivity
 import com.suhotrub.conversations.ui.util.recycler.ItemList
 import com.suhotrub.conversations.ui.util.recycler.PaginationState
@@ -56,9 +53,11 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
     var canScroll = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         val fade = Fade()
+        fade.excludeTarget(android.R.id.statusBarBackground,true)
         fade.excludeTarget(R.id.appbar, true)
         fade.excludeTarget(R.id.toolbar, true)
 
@@ -67,9 +66,8 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
 
         window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
 
-        StatusBarUtil.setTranslucentForCoordinatorLayout(this, ResourcesCompat.getColor(resources, R.color.colorPrimary, null))
-
         setContentView(R.layout.activity_group)
+        //findViewById<View>(android.R.id.statusBarBackground)?.elevation = appbar.elevation
 
         group_users_rv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true).apply { stackFromEnd = true }
         group_users_rv.adapter = adapter
@@ -89,7 +87,8 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
 
 
         group_header.setOnClickListener {
-            val intent = GroupInfoActivity.prepareIntent(this,intent.getParcelableExtra<GroupDto>("EXTRA_FIRST") ?: GroupDto())
+            val intent = GroupInfoActivity.prepareIntent(this, intent.getParcelableExtra<GroupDto>("EXTRA_FIRST")
+                    ?: GroupDto())
             startActivity(intent,
                     ActivityOptionsCompat
                             .makeSceneTransitionAnimation(
@@ -111,9 +110,14 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
         send_message_btn.setOnClickListener {
             presenter.sendMessage()
         }
-    }
 
+        group_call_btn.setOnClickListener {
+            startActivity(CallActivity.prepareIntent(this@GroupActivity,groupDto))
+        }
+    }
+    lateinit var groupDto: GroupDto
     override fun renderGroup(groupDto: GroupDto) {
+        this.groupDto = groupDto
         group_title_tv.setTextOrGone(groupDto.name)
     }
 
