@@ -6,6 +6,7 @@ import org.webrtc.*
 class PeerConnectionObserver(
         private val onIceCandidateCb: (IceCandidate) -> Unit,
         private val onAddStreamCb: (MediaStream) -> Unit,
+        private val onIceConnectionChange: (PeerConnection.IceConnectionState) -> Unit,
         private val onRemoveStreamCb: (MediaStream) -> Unit) : PeerConnection.Observer {
 
     private val TAG = "RTCEvent"
@@ -31,6 +32,8 @@ class PeerConnectionObserver(
 
     override fun onIceConnectionChange(newState: PeerConnection.IceConnectionState?) {
         Log.w(TAG, "onIceConnectionChange: $newState")
+        /*if (newState != null)
+            onIceConnectionChange(newState)*/
     }
 
     override fun onIceGatheringChange(newState: PeerConnection.IceGatheringState?) {

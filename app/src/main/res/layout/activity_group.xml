@@ -57,7 +57,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
                 android:clickable="true"
-                android:layout_margin="16dp"
+                android:padding="8dp"
+                android:layout_margin="8dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_video_call_white_24dp" />
         </android.support.v7.widget.Toolbar>

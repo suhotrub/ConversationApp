@@ -24,6 +24,7 @@ import com.google.android.flexbox.FlexboxLayout
 import com.suhotrub.conversations.R
 import com.suhotrub.conversations.model.group.GroupDto
 import com.suhotrub.conversations.ui.util.ui.CustomDragShadow
+import com.suhotrub.conversations.ui.util.ui.showError
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_call.*
 import org.webrtc.MediaStream
@@ -46,17 +47,13 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnLongClickListener,
             for (i in 0 until it.childCount)
                 (it.getChildAt(i) as? SurfaceViewRenderer)?.release()
         }
-        /*listOf(view1, view2, view3, view4, view5).forEach {
-            it.release()
-        }*/
-
         presenter.stop()
         super.onDestroy()
     }
 
     override fun onLocalMediaStream(mediaStream: MediaStream) {
         view1.setMirror(true)
-        view1.init(presenter.webRTCWrapper.rootEglBase.eglBaseContext, null)
+        view1.init(presenter.webRTCWrapper?.rootEglBase?.eglBaseContext, null)
         view1.setZOrderMediaOverlay(true)
 
         mediaStream.videoTracks[0].addSink(view1)
@@ -82,7 +79,7 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnLongClickListener,
 
             setOnDragListener(this@CallActivity)
             setOnLongClickListener(this@CallActivity)
-            init(presenter.webRTCWrapper.rootEglBase.eglBaseContext, null)
+            init(presenter.webRTCWrapper?.rootEglBase?.eglBaseContext, null)
             setZOrderMediaOverlay(true)
             mediaStream.videoTracks[0].setEnabled(true)
             id = mediaStream.id.hashCode() + MAGIC_NUMBER
@@ -152,10 +149,9 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnLongClickListener,
         }*/
     }
 
-    /**
-     * WebRTC
-     */
-
+    override fun showMessage(text: String) {
+        showError(text)
+    }
     /**
      * UI
      */

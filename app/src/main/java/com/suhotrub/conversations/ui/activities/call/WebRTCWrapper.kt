@@ -4,19 +4,18 @@ import android.content.Context
 import android.util.Log
 import com.suhotrub.conversations.interactor.signalr.MainHubInteractor
 import com.suhotrub.conversations.interactor.signalr.invokeEvent
-import com.suhotrub.conversations.model.user.UserDto
 import com.suhotrub.conversations.ui.util.subscribe
 import com.suhotrub.conversations.ui.util.subscribeIoHandleError
+import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import org.webrtc.*
 import timber.log.Timber
+import java.util.concurrent.Executor
 
 class WebRTCWrapper(
         private val context: Context,
         private val mainHubInteractor: MainHubInteractor
 ) {
-    private lateinit var peerConnectionFactory: PeerConnectionFactory
-    lateinit var rootEglBase: EglBase
 
     private var localPeer: PeerConnection? = null
     private var localAudioSource: AudioSource? = null
@@ -25,18 +24,38 @@ class WebRTCWrapper(
     private val connetions = mutableListOf<PeerConnection>()
 
     // INIT GLOBALS
-    init {
-        init()
+
+    private val offerAnswerConstraints by lazy {
+        MediaConstraints().apply {
+            mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"))
+            mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
+        }
+    }
+    private val peerConnectionConstraints by lazy {
+        MediaConstraints().apply {
+
+            mandatory.add(MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"))
+            mandatory.add(MediaConstraints.KeyValuePair("RtpDataChannels", "false"))
+        }
+    }
+    private val audioConstraints by lazy {
+        MediaConstraints().apply {
+
+            mandatory.add(MediaConstraints.KeyValuePair("echoCancellation", "true"))
+            mandatory.add(MediaConstraints.KeyValuePair("noiseSuppression", "true"))
+            mandatory.add(MediaConstraints.KeyValuePair("autoGainControl", "true"))
+            mandatory.add(MediaConstraints.KeyValuePair("volume", "1"))
+        }
+
+    }
+    val rootEglBase: EglBase by lazy {
+        EglBase.create()
     }
 
-    private fun init() {
-
-        rootEglBase = EglBase.create()
-
+    private val peerConnectionFactory by lazy {
         val defaultVideoEncoderFactory = DefaultVideoEncoderFactory(
                 rootEglBase.eglBaseContext, true, true)
         val defaultVideoDecoderFactory = DefaultVideoDecoderFactory(rootEglBase.eglBaseContext)
-
 
         PeerConnectionFactory.initialize(
                 PeerConnectionFactory.InitializationOptions
@@ -45,24 +64,47 @@ class WebRTCWrapper(
 
         val options = PeerConnectionFactory.Options()
 
-        peerConnectionFactory = PeerConnectionFactory.builder()
+        PeerConnectionFactory.builder()
                 .setOptions(options)
                 .setVideoDecoderFactory(defaultVideoDecoderFactory)
                 .setVideoEncoderFactory(defaultVideoEncoderFactory)
                 .createPeerConnectionFactory();
+    }
 
-
-
-        subscribe(mainHubInteractor.observeEvent("NewPublisher", NewPublisherResponse::class.java)) {
-            onOfferReceived(it)
+    private val executor by lazy {
+        Executor {
+            Thread(it).start()
         }
     }
 
-    private fun initPeerConnection() {
+    init {
+        init()
+    }
+
+    var disposable: Disposable? = null
+    var subject = PublishSubject.create<Boolean>()
+    var offerRequests = mutableListOf<NewPublisherResponse>()
+    private fun init() {
+        disposable = subscribe(
+                mainHubInteractor.observeEvent("NewPublisher", NewPublisherResponse::class.java))
+        {
+            if (fullyLoaded)
+                executor.execute {
+                    onOfferReceived(it)
+                }
+            else
+                offerRequests.add(it)
+        }
+
+    }
+
+    private fun initLocalPeerConnection() {
         val iceServers = arrayListOf(
                 PeerConnection.IceServer.builder("stun:stun.l.google.com:19302"/*"stun:89.249.28.54:3478"*/).createIceServer()
         )
-        localPeer = peerConnectionFactory.createPeerConnection(iceServers,
+        localPeer = peerConnectionFactory.createPeerConnection(
+                iceServers,
+                peerConnectionConstraints,
                 PeerConnectionObserver(
                         onIceCandidateCb = {
                             onIceCandidate(it)
@@ -70,24 +112,27 @@ class WebRTCWrapper(
                         onAddStreamCb = {
                             onAddStream(it)
                         },
+                        onIceConnectionChange = {
+                            iceConnectionStatePublisher.onNext(it)
+                        },
                         onRemoveStreamCb = {
                             onRemoveStream(it)
                         }))
 
     }
 
-    val constraints = MediaConstraints()
-
     fun call() {
-        constraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"))
-        constraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
 
+        executor.execute {
+            initLocalPeerConnection()
 
-        initPeerConnection()
-        val localMediaStream = getUserMediaAndAddStream(localPeer!!)
-        localStreamPublisher.onNext(localMediaStream)
+            val localMediaStream = getUserMediaAndAddStream(localPeer!!)
+            localStreamPublisher.onNext(localMediaStream)
 
-        createOffer(localPeer, constraints)
+            createOffer(localPeer)
+
+        }
+
     }
 
     fun stop() {
@@ -96,43 +141,40 @@ class WebRTCWrapper(
 
     // INIT LISTENERS
     private fun onIceCandidate(iceCandidate: IceCandidate) {
-        mainHubInteractor.safeOperation {
-            subscribeIoHandleError(
-                    it.invokeEvent<TrickleResponse>("Trickle",
-                            TrickleCandidateReceived(
-                                    sdpMid = iceCandidate.sdpMid,
-                                    sdpMLineIndex = iceCandidate.sdpMLineIndex,
-                                    completed = iceCandidate.sdp.isNullOrEmpty(),
-                                    candidate = iceCandidate.sdp
-                            )
-                    ),
-                    {
-                        Log.d("ANTON", it.toString())
-                    },
-                    {
-                        Log.e("ANTON", it.toString(), it)
-                    })
-        }
+        /*executor.execute {
+            mainHubInteractor.safeOperation {
+                subscribeIoHandleError(
+                        it.invokeEvent<TrickleResponse>("Trickle",
+                                TrickleCandidateReceived(
+                                        sdpMid = iceCandidate.sdpMid,
+                                        sdpMLineIndex = iceCandidate.sdpMLineIndex,
+                                        completed = iceCandidate.sdp.isNullOrEmpty(),
+                                        candidate = iceCandidate.sdp
+                                )
+                        ),
+                        {
+                            Log.d("ANTON", it.toString())
+                        },
+                        {
+                            Log.e("ANTON", it.toString(), it)
+                        })
+            }
+        }*/
 
     }
 
     private fun onAddStream(stream: MediaStream) {
         remoteStreamPublisher.onNext(stream)
-        /*runOnUiThread {
-            try {
-                videoTrack?.addSink(view2)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }*/
     }
 
     private fun onRemoveStream(stream: MediaStream) {
         remoteStreamPublisher.onNext(stream)
     }
 
+    private val iceConnectionStatePublisher = PublishSubject.create<PeerConnection.IceConnectionState>()
     private val localStreamPublisher = PublishSubject.create<MediaStream>()
     private val remoteStreamPublisher = PublishSubject.create<MediaStream>()
+    fun observeIceConnectionStateChange() = iceConnectionStatePublisher
     fun observeRemoteStream() = remoteStreamPublisher
     fun observeLocalStream() = localStreamPublisher
 
@@ -140,7 +182,7 @@ class WebRTCWrapper(
     // GATHER USER MEDIA
 
     private fun getUserMediaAndAddStream(localPeer: PeerConnection): MediaStream {
-        val localAudioTrack = initAudio(peerConnectionFactory, createAudioConstraints())
+        val localAudioTrack = initAudio(peerConnectionFactory, audioConstraints)
         var localVideoTrack = initVideo(peerConnectionFactory, rootEglBase, true)
 
         val localMediaStream = peerConnectionFactory.createLocalMediaStream("STREAM1")
@@ -164,12 +206,6 @@ class WebRTCWrapper(
         return localVideoTrack
     }
 
-    private fun createAudioConstraints(): MediaConstraints {
-        val constraints = MediaConstraints()
-        constraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"))
-        constraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
-        return constraints
-    }
 
     private fun initAudio(peerConnectionFactory: PeerConnectionFactory, constraints: MediaConstraints): AudioTrack {
         val audioSource = peerConnectionFactory.createAudioSource(constraints);
@@ -233,54 +269,67 @@ class WebRTCWrapper(
 
     }
 
-
+    var fullyLoaded = false
     // CREATING OFFER
-    private fun createOffer(localPeer: PeerConnection?, constraints: MediaConstraints) {
+    private fun createOffer(localPeer: PeerConnection?) {
         localPeer?.createOffer(SDPCreateCallback { sdpCreateResult ->
+            executor.execute {
+                if (sdpCreateResult is SDPCreateSuccess) {
+                    try {
+                        localPeer.setLocalDescription(SDPSetCallback {
 
-            if (sdpCreateResult is SDPCreateSuccess) {
-                try {
-                    localPeer.setLocalDescription(SDPSetCallback {
+                            //ПИНАЕМ АНТОНА todo в callback выше
+                            mainHubInteractor.safeOperation {
+                                subscribeIoHandleError(
+                                        it.invokeEvent<InititateCallResponse>(
+                                                "InitiateCall",
+                                                InitiateCallRequest(
+                                                        Jsep(
+                                                                sdp = sdpCreateResult.descriptor.description,
+                                                                type = sdpCreateResult.descriptor.type.canonicalForm()
+                                                        ),
+                                                        groupGuid = ""
+                                                )),
+                                        {
+                                            Log.d("ANTON", it.toString())
+                                            executor.execute {
+                                                localPeer.setRemoteDescription(
+                                                        SDPSetCallback {
+                                                            fullyLoaded = true
+                                                            offerRequests.forEach {
+                                                                executor.execute {
+                                                                    Thread.sleep(1000)
+                                                                    onOfferReceived(it)
+                                                                }
+                                                            }
+                                                            offerRequests.clear()
+                                                        },
+                                                        SessionDescription(SessionDescription.Type.fromCanonicalForm(it.data.type), it.data.sdp))
+                                            }
+                                        },
+                                        {
+                                            Log.e("ANTON", it.toString(), it)
 
-                    }, sdpCreateResult.descriptor)
-                } catch (t: Throwable) {
-                    Log.d("SDP", "lol", t)
+                                        })
+                            }
+
+
+                        }, sdpCreateResult.descriptor)
+                    } catch (t: Throwable) {
+                        Log.d("SDP", "lol", t)
+                    }
+                    Log.d("onCreateSuccess", "SignallingClient emit ")
+
+
                 }
-                Log.d("onCreateSuccess", "SignallingClient emit ")
-
-
-                //ПИНАЕМ АНТОНА
-                mainHubInteractor.safeOperation {
-                    subscribeIoHandleError(
-                            it.invokeEvent<InititateCallResponse>(
-                                    "InitiateCall",
-                                    InitiateCallRequest(
-                                            Jsep(
-                                                    sdp = sdpCreateResult.descriptor.description,
-                                                    type = sdpCreateResult.descriptor.type.canonicalForm()
-                                            ),
-                                            groupGuid = ""
-                                    )),
-                            {
-                                Log.d("ANTON", it.toString())
-                                localPeer.setRemoteDescription(
-                                        SDPSetCallback { },
-                                        SessionDescription(SessionDescription.Type.fromCanonicalForm(it.data.type), it.data.sdp))
-
-                            },
-                            {
-                                Log.e("ANTON", it.toString(), it)
-
-                            })
-                }
-
-
             }
 
-        }, constraints)
+        }, offerAnswerConstraints)
     }
 
+    private fun sendOfferToHub() {
 
+    }
     // OBSERVING OFFER
 
     private fun onOfferReceived(newPublisherResponse: NewPublisherResponse) {
@@ -288,10 +337,16 @@ class WebRTCWrapper(
         val iceServers = arrayListOf(
                 PeerConnection.IceServer.builder("stun:stun.l.google.com:19302"/*"stun:89.249.28.54:3478"*/).createIceServer()
         )
-        val remotePeer = peerConnectionFactory.createPeerConnection(iceServers,
+
+        val remotePeer = peerConnectionFactory.createPeerConnection(
+                iceServers,
+                peerConnectionConstraints,
                 PeerConnectionObserver(
                         onIceCandidateCb = {
                             onIceCandidate(it)
+                        },
+                        onIceConnectionChange = {
+                            iceConnectionStatePublisher.onNext(it)
                         },
                         onAddStreamCb = {
                             onAddStream(it)
@@ -302,29 +357,31 @@ class WebRTCWrapper(
 
         connetions.add(remotePeer!!)
 
-        remotePeer?.setRemoteDescription(SDPCreateCallback {
-        }, SessionDescription(
-                SessionDescription.Type.fromCanonicalForm(newPublisherResponse.answer.type),
-                newPublisherResponse.answer.sdp
-        ))
-        sendAnswer(remotePeer,newPublisherResponse)
+        remotePeer?.setRemoteDescription(SDPSetCallback {
+            sendAnswer(remotePeer, newPublisherResponse)
+        },
+                SessionDescription(
+                        SessionDescription.Type.fromCanonicalForm(newPublisherResponse.answer.type),
+                        newPublisherResponse.answer.sdp
+                ))
+
+        //TODO в callback выше
 
     }
 
     private fun sendAnswer(remotePeer: PeerConnection?, newPublisherResponse: NewPublisherResponse) {
-        val falseConstraints = MediaConstraints()
-        falseConstraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"))
-        falseConstraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
         remotePeer?.createAnswer(object : SdpObserver {
             override fun onCreateSuccess(sdp: SessionDescription?) {
-                remotePeer?.setLocalDescription(SDPSetCallback {}, sdp)
+                executor.execute {
+                    remotePeer?.setLocalDescription(SDPSetCallback {}, sdp)
 
-                mainHubInteractor.safeOperation {
+                    mainHubInteractor.safeOperation {
 
-                    it.invoke("AnswerNewPublisher", AnswerNewPublisherRequest(
-                            handleId = newPublisherResponse.handleId,
-                            answer = Jsep(sdp?.type?.canonicalForm(), sdp?.description)
-                    ))
+                        it.invoke("AnswerNewPublisher", AnswerNewPublisherRequest(
+                                handleId = newPublisherResponse.handleId,
+                                answer = Jsep(sdp?.type?.canonicalForm(), sdp?.description)
+                        ))
+                    }
                 }
             }
 
@@ -335,70 +392,37 @@ class WebRTCWrapper(
             override fun onCreateFailure(p0: String?) {
                 Timber.d(p0)
             }
-        }, falseConstraints)
+        }, offerAnswerConstraints)
 
     }
 
     fun terminate() {
+        executor.execute {
+            disposable?.dispose()
+            localPeer?.close()
+            localPeer?.dispose()
+            connetions.forEach {
+                it.close()
+                it.dispose()
+            }
+            try {
+                localVideoCapturer?.stopCapture()
+            } catch (t: Throwable) {
 
-        try {
-            localVideoCapturer?.stopCapture()
-        } catch (t: Throwable) {
+            }
+            localVideoCapturer?.dispose()
+            localVideoSource?.dispose()
+            localAudioSource?.dispose()
 
+            remoteStreamPublisher.onComplete()
+            localStreamPublisher.onComplete()
+
+            peerConnectionFactory.dispose()
+
+            rootEglBase.detachCurrent()
+            rootEglBase.release()
         }
-
-        remoteStreamPublisher.onComplete()
-        localStreamPublisher.onComplete()
-
-        localVideoCapturer?.dispose()
-        localVideoSource?.dispose()
-
-        localAudioSource?.dispose()
-
-        localPeer?.dispose()
-        connetions.forEach { it.dispose() }
-
-        rootEglBase.release()
-
-        peerConnectionFactory.dispose()
-
     }
 }
-
-interface SDPCreateResult
-
-data class SDPCreateSuccess(val descriptor: SessionDescription) : SDPCreateResult
-data class SDPCreateFailure(val reason: String?) : SDPCreateResult
-
-class SDPCreateCallback(private val callback: (SDPCreateResult) -> Unit) : SdpObserver {
-
-    override fun onSetFailure(reason: String?) {}
-
-    override fun onSetSuccess() {}
-
-    override fun onCreateSuccess(descriptor: SessionDescription) = callback(SDPCreateSuccess(descriptor))
-
-    override fun onCreateFailure(reason: String?) = callback(SDPCreateFailure(reason))
-}
-
-class SDPSetCallback(private val callback: (String?) -> Unit) : SdpObserver {
-
-    override fun onSetFailure(reason: String?) = callback(reason)
-
-    override fun onSetSuccess() = callback(null)
-
-    override fun onCreateSuccess(descriptor: SessionDescription?) {}
-
-    override fun onCreateFailure(reason: String?) {}
-}
-
-data class NewPublisherResponse(
-        val handleId: Long,
-        val answer: Jsep,
-        val user: UserDto
-)
-
-data class AnswerNewPublisherRequest(
-        val handleId: Long,
-        val answer: Jsep
-)
+//offerReceived -> createRemotePeer -> remotePeer.setRemoteDescription -> remotePeer.createAnswer -> remotePeer.setLocalDescription; AnswerNewPublisher
+//initLocalPeerConnection -> localPeer.createOffer -> localPeer.setLocalDescription -> InitiateCall -> localPeer.setRemoteDescription

@@ -12,4 +12,7 @@ interface CallView: MvpView{
 
     @StateStrategyType(SkipStrategy::class)
     fun onRemoteMediaStream(mediaStream: MediaStream)
+
+    @StateStrategyType(SkipStrategy::class)
+    fun showMessage(text:String)
 }

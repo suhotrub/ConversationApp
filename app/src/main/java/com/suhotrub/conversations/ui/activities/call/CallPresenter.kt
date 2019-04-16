@@ -17,22 +17,27 @@ class CallPresenter @Inject constructor(
 ) : MvpPresenter<CallView>() {
 
 
-    val webRTCWrapper: WebRTCWrapper
+    var webRTCWrapper: WebRTCWrapper? = null
 
-    init {
+    fun call() {
         webRTCWrapper = WebRTCWrapper(context, mainHubInteractor)
         observeMediaStreams()
+        webRTCWrapper?.call()
+
     }
-
-    fun call() = webRTCWrapper.call()
-    fun stop() = webRTCWrapper.stop()
-
+    fun stop() {
+        webRTCWrapper?.stop()
+        webRTCWrapper = null
+    }
     private fun observeMediaStreams() {
-        subscribe(webRTCWrapper.observeLocalStream()) {
+        subscribe(webRTCWrapper?.observeLocalStream()) {
             viewState.onLocalMediaStream(it)
         }
-        subscribe(webRTCWrapper.observeRemoteStream()) {
+        subscribe(webRTCWrapper?.observeRemoteStream()) {
             viewState.onRemoteMediaStream(it)
+        }
+        subscribe(webRTCWrapper?.observeIceConnectionStateChange()) {
+            viewState.showMessage(it.toString())
         }
     }
 }

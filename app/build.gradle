@@ -77,6 +77,8 @@ dependencies {
     kapt 'com.arello-mobile:moxy-compiler:1.5.5'
 
 
+
+
     compile 'com.jaeger.statusbarutil:library:1.5.1'
 
     implementation 'com.android.support:design:27.1.0'
@@ -88,5 +90,6 @@ dependencies {
 
     implementation 'org.webrtc:google-webrtc:1.0.27485'
 
+    compile 'co.netguru.videochatguru:videochatguru:0.1.2@aar'
 
 }
