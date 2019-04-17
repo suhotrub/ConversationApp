@@ -24,6 +24,9 @@ class MainPresenter @Inject constructor(
         subscribe(usersRepository.getCurrent()) {}
         mainHubInteractor.stopHubConnection()
         mainHubInteractor.createHubConnection()
+        subscribe(mainHubInteractor.observeEvent("IncomingCall",String::class.java)){
+
+        }
     }
 
 
