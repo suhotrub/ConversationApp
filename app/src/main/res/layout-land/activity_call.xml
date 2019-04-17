@@ -4,19 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_gradient_background"
-    android:orientation="vertical"
-    app:alignItems="flex_start"
-    app:flexDirection="row"
-    app:justifyContent="space_evenly">
+    android:orientation="horizontal">
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/flex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:flexDirection="column"
             app:justifyContent="space_evenly">
 
             <org.webrtc.SurfaceViewRenderer
@@ -36,12 +34,12 @@
                 android:layout_height="100dp"
                 android:layout_margin="8dp" />-->
         </com.google.android.flexbox.FlexboxLayout>
-    </HorizontalScrollView>
+    </ScrollView>
 
     <FrameLayout
         android:id="@+id/video_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
 

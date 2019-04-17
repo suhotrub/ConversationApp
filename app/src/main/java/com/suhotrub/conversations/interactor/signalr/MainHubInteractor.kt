@@ -162,9 +162,12 @@ inline fun <reified T : Any> HubConnection.observeEventOnce(eventName: String): 
     val observable = BehaviorSubject.create<T>()
     val gson = Gson()
     val listener = HubEventListener {
-
-        gson.fromJson<T>(it.target.split("result\":")[1].dropLast(1), T::class.java).let {
-            observable.onNext(it)
+        try {
+            gson.fromJson<T>(it.target.split("result\":")[1].dropLast(1), T::class.java).let {
+                observable.onNext(it)
+            }
+        }catch (t:Throwable){
+            observable.onError(t)
         }
     }
     observable.doOnNext {

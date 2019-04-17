@@ -1,7 +1,6 @@
 package com.suhotrub.conversations.ui.activities.call
 
 import android.Manifest
-import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,19 +10,16 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewCompat
-import android.view.DragEvent
 import android.view.View
-import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.google.android.flexbox.FlexboxLayout
+import com.jaeger.library.StatusBarUtil
 import com.suhotrub.conversations.R
 import com.suhotrub.conversations.model.group.GroupDto
-import com.suhotrub.conversations.ui.util.ui.CustomDragShadow
 import com.suhotrub.conversations.ui.util.ui.showError
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_call.*
@@ -32,7 +28,7 @@ import org.webrtc.SurfaceViewRenderer
 import javax.inject.Inject
 
 
-class CallActivity : MvpAppCompatActivity(), CallView, View.OnLongClickListener, View.OnDragListener {
+class CallActivity : MvpAppCompatActivity(), CallView, View.OnClickListener {
 
     @Inject
     @InjectPresenter
@@ -42,8 +38,8 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnLongClickListener,
     fun providePresenter() = presenter
 
     override fun onDestroy() {
-        view1.release()
-        listOf(flex,bottom,top).forEach {
+        //view1.release()
+        listOf(flex, video_container).forEach {
             for (i in 0 until it.childCount)
                 (it.getChildAt(i) as? SurfaceViewRenderer)?.release()
         }
@@ -62,31 +58,53 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnLongClickListener,
     val MAGIC_NUMBER = 1337
     override fun onRemoteMediaStream(mediaStream: MediaStream) {
 
-        val isBottom = bottom.childCount == 0
-        (if (isBottom) bottom else flex).addView(SurfaceViewRenderer(this@CallActivity).apply {
+        val isBottom = video_container.childCount == 0
+        (if (isBottom) video_container else flex).addView(SurfaceViewRenderer(this@CallActivity).apply {
 
             val dp8 = dpToPx(8f).toInt()
 
             if (isBottom)
-                layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT).apply {
-                    weight = 1F
-                    setMargins(dp8, dp8, dp8, dp8)
+                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply {
                 }
             else
                 layoutParams = ViewGroup.MarginLayoutParams(dpToPx(100F).toInt(), dpToPx(100F).toInt()).apply {
-                    setMargins(dp8, dp8, dp8, dp8)
                 }
 
-            setOnDragListener(this@CallActivity)
-            setOnLongClickListener(this@CallActivity)
+            setOnClickListener(this@CallActivity)
             init(presenter.webRTCWrapper?.rootEglBase?.eglBaseContext, null)
             setZOrderMediaOverlay(true)
             mediaStream.videoTracks[0].setEnabled(true)
-            id = mediaStream.id.hashCode() + MAGIC_NUMBER
             mediaStream.videoTracks[0].addSink(this)
+            //id = mediaStream.id.hashCode() + MAGIC_NUMBER
 
             this.invalidate()
         })
+    }
+
+    override fun onClick(v: View) {
+        if (v.parent != video_container) {
+            var position = 0
+
+            (v.parent as ViewGroup).let {
+                for (i in 0 until it.childCount) {
+                    if(it.getChildAt(i)==v)
+                        position = i
+                }
+            }
+            flex.removeViewAt(position)
+            val dp8 = dpToPx(8f).toInt()
+
+            if(video_container.childCount!=0) {
+                val bigView = video_container.getChildAt(0)
+                video_container.removeViewAt(0)
+                flex.addView(bigView,position)
+                bigView.layoutParams = FlexboxLayout.LayoutParams(dpToPx(100F).toInt(), dpToPx(100F).toInt()).apply {
+                }
+            }
+            v.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply {
+            }
+            video_container.addView(v)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,8 +115,10 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnLongClickListener,
 
         setContentView(R.layout.activity_call)
 
-        view1.setOnLongClickListener(this)
-        listOf(flex, top, bottom).forEach { it.setOnDragListener(this) }
+        StatusBarUtil.setTransparent(this)
+
+        view1.setOnClickListener(this)
+        //listOf(flex, top, bottom).forEach { it.setOnDragListener(this) }
 
         if (ContextCompat.checkSelfPermission(this,
                         Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -152,11 +172,12 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnLongClickListener,
     override fun showMessage(text: String) {
         showError(text)
     }
+
     /**
      * UI
      */
 
-    override fun onLongClick(v: View): Boolean {
+    /*override fun onLongClick(v: View): Boolean {
         if (v.parent == top && !(top.childCount >= bottom.childCount && bottom.childCount != 0))
             return true
         if (v.parent == bottom && !(bottom.childCount >= top.childCount && top.childCount != 0))
@@ -264,7 +285,7 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnLongClickListener,
             }
         }
         return true
-    }
+    }*/
 
     private fun vibrate() {
         val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator

@@ -17,6 +17,7 @@ class WebRTCWrapper(
         private val mainHubInteractor: MainHubInteractor
 ) {
 
+    @Volatile
     private var localPeer: PeerConnection? = null
     private var localAudioSource: AudioSource? = null
     private var localVideoSource: VideoSource? = null
@@ -90,6 +91,7 @@ class WebRTCWrapper(
         {
             if (fullyLoaded)
                 executor.execute {
+                    Thread.sleep(1000)
                     onOfferReceived(it)
                 }
             else
@@ -128,7 +130,7 @@ class WebRTCWrapper(
 
             val localMediaStream = getUserMediaAndAddStream(localPeer!!)
             localStreamPublisher.onNext(localMediaStream)
-
+            Thread.sleep(1000)
             createOffer(localPeer)
 
         }
@@ -273,56 +275,57 @@ class WebRTCWrapper(
     // CREATING OFFER
     private fun createOffer(localPeer: PeerConnection?) {
         localPeer?.createOffer(SDPCreateCallback { sdpCreateResult ->
-            executor.execute {
-                if (sdpCreateResult is SDPCreateSuccess) {
-                    try {
-                        localPeer.setLocalDescription(SDPSetCallback {
+            //executor.execute {
+            if (sdpCreateResult is SDPCreateSuccess) {
+                try {
+                    localPeer.setLocalDescription(SDPSetCallback {
 
-                            //ПИНАЕМ АНТОНА todo в callback выше
-                            mainHubInteractor.safeOperation {
-                                subscribeIoHandleError(
-                                        it.invokeEvent<InititateCallResponse>(
-                                                "InitiateCall",
-                                                InitiateCallRequest(
-                                                        Jsep(
-                                                                sdp = sdpCreateResult.descriptor.description,
-                                                                type = sdpCreateResult.descriptor.type.canonicalForm()
-                                                        ),
-                                                        groupGuid = ""
-                                                )),
-                                        {
-                                            Log.d("ANTON", it.toString())
-                                            executor.execute {
-                                                localPeer.setRemoteDescription(
-                                                        SDPSetCallback {
-                                                            fullyLoaded = true
+                        //ПИНАЕМ АНТОНА todo в callback выше
+                        mainHubInteractor.safeOperation {
+                            subscribeIoHandleError(
+                                    it.invokeEvent<InititateCallResponse>(
+                                            "InitiateCall",
+                                            InitiateCallRequest(
+                                                    Jsep(
+                                                            sdp = sdpCreateResult.descriptor.description,
+                                                            type = sdpCreateResult.descriptor.type.canonicalForm()
+                                                    ),
+                                                    groupGuid = ""
+                                            )),
+                                    {
+                                        Log.d("ANTON", it.toString())
+                                        executor.execute {
+                                            Thread.sleep(1000)
+                                            localPeer.setRemoteDescription(
+                                                    SDPSetCallback {
+                                                        fullyLoaded = true
+                                                        executor.execute {
+                                                            Thread.sleep(3000)
                                                             offerRequests.forEach {
-                                                                executor.execute {
-                                                                    Thread.sleep(1000)
-                                                                    onOfferReceived(it)
-                                                                }
+                                                                onOfferReceived(it)
                                                             }
                                                             offerRequests.clear()
-                                                        },
-                                                        SessionDescription(SessionDescription.Type.fromCanonicalForm(it.data.type), it.data.sdp))
-                                            }
-                                        },
-                                        {
-                                            Log.e("ANTON", it.toString(), it)
+                                                        }
+                                                    },
+                                                    SessionDescription(SessionDescription.Type.fromCanonicalForm(it.data.type), it.data.sdp))
+                                        }
+                                    },
+                                    {
+                                        Log.e("ANTON", it.toString(), it)
 
-                                        })
-                            }
-
-
-                        }, sdpCreateResult.descriptor)
-                    } catch (t: Throwable) {
-                        Log.d("SDP", "lol", t)
-                    }
-                    Log.d("onCreateSuccess", "SignallingClient emit ")
+                                    })
+                        }
 
 
+                    }, sdpCreateResult.descriptor)
+                } catch (t: Throwable) {
+                    Log.d("SDP", "lol", t)
                 }
+                Log.d("onCreateSuccess", "SignallingClient emit ")
+
+
             }
+            //}
 
         }, offerAnswerConstraints)
     }
