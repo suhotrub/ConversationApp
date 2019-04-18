@@ -21,8 +21,6 @@ class PublisherView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     init {
         inflate(context, R.layout.view_publisher, this)
-        surface_view.setZOrderMediaOverlay(true)
-        setWillNotDraw(false)
     }
 
     fun release() {
@@ -35,18 +33,27 @@ class PublisherView @JvmOverloads constructor(context: Context, attrs: Attribute
     fun setStream(eglseBaseContext: EglBase.Context?, mediaStream: MediaStream, userDto: UserDto) {
         stream = mediaStream
 
-        username.text = userDto.login
-
         surface_view.init(eglseBaseContext, object : RendererCommon.RendererEvents {
             override fun onFirstFrameRendered() {
-                progressBar.setVisibleOrGone(false)
-
+                post {
+                    publisher_progress.setVisibleOrGone(false)
+                }
             }
 
             override fun onFrameResolutionChanged(p0: Int, p1: Int, p2: Int) {
             }
         })
+        surface_view.setZOrderMediaOverlay(true)
+        mediaStream.videoTracks[0].setEnabled(true)
+        mediaStream.videoTracks[0].addSink(surface_view)
 
+        /*surface_view.init(eglseBaseContext*//*, o
+        }*//*)*/
+
+
+
+        username.text = userDto.login
+        makeInfoVisible()
         mute.setOnClickListener {
             if (mediaStream.audioTracks[0].enabled()) {
                 mute.setImageResource(R.drawable.ic_volume_off_white_24dp)
@@ -56,11 +63,6 @@ class PublisherView @JvmOverloads constructor(context: Context, attrs: Attribute
                 mediaStream.audioTracks[0].setEnabled(true)
             }
         }
-
-        mediaStream.videoTracks[0].setEnabled(true)
-        mediaStream.videoTracks[0].addSink(surface_view)
-
-        makeInfoVisible()
     }
 
     var showed = false
@@ -72,7 +74,7 @@ class PublisherView @JvmOverloads constructor(context: Context, attrs: Attribute
         postDelayed({
             makeInvisible()
 
-        },2000)
+        }, 2000)
     }
 
     fun makeInvisible() {

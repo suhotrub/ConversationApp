@@ -63,18 +63,17 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnClickListener {
     override fun onRemoteMediaStream(mediaStream: MediaStream, userDto: UserDto?) {
 
         val isBottom = video_container.childCount == 0
-        (if (isBottom) video_container else flex).addView(PublisherView(this@CallActivity).apply {
+        val view = PublisherView(this@CallActivity).apply {
 
             if (isBottom)
                 layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             else
                 layoutParams = FlexboxLayout.LayoutParams(dpToPx(100F).toInt(), dpToPx(100F).toInt())
 
-            setStream(presenter.webRTCWrapper?.rootEglBase?.eglBaseContext, mediaStream, userDto ?: UserDto())
 
             setOnClickListener(this@CallActivity)
             invalidate()
-        })
+        }
         /*
         val isBottom = video_container.childCount == 0
         (if (isBottom) video_container else flex).addView(SurfaceViewRenderer(this@CallActivity).apply {
@@ -89,6 +88,13 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnClickListener {
 
             this.invalidate()
         })*/
+        (if (isBottom) video_container else flex).addView(view)
+        view.postDelayed({
+            view.setStream(presenter.webRTCWrapper?.rootEglBase?.eglBaseContext, mediaStream, userDto
+                    ?: UserDto())
+            view.invalidate()
+        }, 1000)
+
     }
 
     override fun onClick(v: View) {
