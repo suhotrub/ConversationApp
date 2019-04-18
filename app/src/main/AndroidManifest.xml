@@ -76,7 +76,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.activities.call.CallActivity"></activity>
+        <activity android:name=".ui.activities.call.CallActivity"/>
     </application>
 
 </manifest>

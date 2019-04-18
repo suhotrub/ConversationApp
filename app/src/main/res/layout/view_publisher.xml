@@ -1,27 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:background="#eee">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <org.webrtc.SurfaceViewRenderer
+        android:id="@+id/surface_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ProgressBar
+        android:id="@+id/publisher_progress"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center" />
 
     <TextView
+        android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/bg_publisher_shadow"
+        android:ellipsize="end"
         android:gravity="center"
+        android:lines="1"
         android:padding="6dp"
         android:text="Username"
         android:textAppearance="@style/AvenirRegular.13.White" />
 
     <FrameLayout
+        android:id="@+id/bottom_panel"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@drawable/bg_publisher_shadow_reversed"
-        android:layout_height="wrap_content">
+        android:background="@drawable/bg_publisher_shadow_reversed">
 
         <ImageView
+            android:id="@+id/mute"
+            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"

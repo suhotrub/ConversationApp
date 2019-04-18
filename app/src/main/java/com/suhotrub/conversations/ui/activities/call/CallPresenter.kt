@@ -34,7 +34,7 @@ class CallPresenter @Inject constructor(
             viewState.onLocalMediaStream(it)
         }
         subscribe(webRTCWrapper?.observeRemoteStream()) {
-            viewState.onRemoteMediaStream(it)
+            viewState.onRemoteMediaStream(it.first,it.second)
         }
         subscribe(webRTCWrapper?.observeIceConnectionStateChange()) {
             viewState.showMessage(it.toString())

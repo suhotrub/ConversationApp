@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -20,6 +21,7 @@ import com.google.android.flexbox.FlexboxLayout
 import com.jaeger.library.StatusBarUtil
 import com.suhotrub.conversations.R
 import com.suhotrub.conversations.model.group.GroupDto
+import com.suhotrub.conversations.model.user.UserDto
 import com.suhotrub.conversations.ui.util.ui.showError
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_call.*
@@ -40,8 +42,10 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnClickListener {
     override fun onDestroy() {
         //view1.release()
         listOf(flex, video_container).forEach {
-            for (i in 0 until it.childCount)
+            for (i in 0 until it.childCount) {
                 (it.getChildAt(i) as? SurfaceViewRenderer)?.release()
+                (it.getChildAt(i) as? PublisherView)?.release()
+            }
         }
         presenter.stop()
         super.onDestroy()
@@ -56,29 +60,35 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnClickListener {
     }
 
     val MAGIC_NUMBER = 1337
-    override fun onRemoteMediaStream(mediaStream: MediaStream) {
+    override fun onRemoteMediaStream(mediaStream: MediaStream, userDto: UserDto?) {
 
+        val isBottom = video_container.childCount == 0
+        (if (isBottom) video_container else flex).addView(PublisherView(this@CallActivity).apply {
+
+            if (isBottom)
+                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            else
+                layoutParams = FlexboxLayout.LayoutParams(dpToPx(100F).toInt(), dpToPx(100F).toInt())
+
+            setStream(presenter.webRTCWrapper?.rootEglBase?.eglBaseContext, mediaStream, userDto ?: UserDto())
+
+            setOnClickListener(this@CallActivity)
+            invalidate()
+        })
+        /*
         val isBottom = video_container.childCount == 0
         (if (isBottom) video_container else flex).addView(SurfaceViewRenderer(this@CallActivity).apply {
 
             val dp8 = dpToPx(8f).toInt()
 
-            if (isBottom)
-                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply {
-                }
-            else
-                layoutParams = ViewGroup.MarginLayoutParams(dpToPx(100F).toInt(), dpToPx(100F).toInt()).apply {
-                }
+
 
             setOnClickListener(this@CallActivity)
-            init(presenter.webRTCWrapper?.rootEglBase?.eglBaseContext, null)
-            setZOrderMediaOverlay(true)
-            mediaStream.videoTracks[0].setEnabled(true)
-            mediaStream.videoTracks[0].addSink(this)
+
             //id = mediaStream.id.hashCode() + MAGIC_NUMBER
 
             this.invalidate()
-        })
+        })*/
     }
 
     override fun onClick(v: View) {
@@ -87,17 +97,17 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnClickListener {
 
             (v.parent as ViewGroup).let {
                 for (i in 0 until it.childCount) {
-                    if(it.getChildAt(i)==v)
+                    if (it.getChildAt(i) == v)
                         position = i
                 }
             }
             flex.removeViewAt(position)
             val dp8 = dpToPx(8f).toInt()
 
-            if(video_container.childCount!=0) {
+            if (video_container.childCount != 0) {
                 val bigView = video_container.getChildAt(0)
                 video_container.removeViewAt(0)
-                flex.addView(bigView,position)
+                flex.addView(bigView, position)
                 bigView.layoutParams = FlexboxLayout.LayoutParams(dpToPx(100F).toInt(), dpToPx(100F).toInt()).apply {
                 }
             }
@@ -324,7 +334,8 @@ data class TrickleCandidateReceived(
         val sdpMid: String,
         val sdpMLineIndex: Int,
         val candidate: String,
-        val completed: Boolean
+        val completed: Boolean,
+        val handleId: Long?
 )
 
 data class TrickleResponse(

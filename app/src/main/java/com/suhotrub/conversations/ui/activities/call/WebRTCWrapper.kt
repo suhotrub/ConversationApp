@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.suhotrub.conversations.interactor.signalr.MainHubInteractor
 import com.suhotrub.conversations.interactor.signalr.invokeEvent
+import com.suhotrub.conversations.model.user.UserDto
 import com.suhotrub.conversations.ui.util.subscribe
 import com.suhotrub.conversations.ui.util.subscribeIoHandleError
 import io.reactivex.disposables.Disposable
@@ -142,8 +143,8 @@ class WebRTCWrapper(
     }
 
     // INIT LISTENERS
-    private fun onIceCandidate(iceCandidate: IceCandidate) {
-        /*executor.execute {
+    private fun onIceCandidate(iceCandidate: IceCandidate,handleId:Long? = null) {
+        executor.execute {
             mainHubInteractor.safeOperation {
                 subscribeIoHandleError(
                         it.invokeEvent<TrickleResponse>("Trickle",
@@ -151,7 +152,8 @@ class WebRTCWrapper(
                                         sdpMid = iceCandidate.sdpMid,
                                         sdpMLineIndex = iceCandidate.sdpMLineIndex,
                                         completed = iceCandidate.sdp.isNullOrEmpty(),
-                                        candidate = iceCandidate.sdp
+                                        candidate = iceCandidate.sdp,
+                                        handleId = handleId
                                 )
                         ),
                         {
@@ -161,21 +163,21 @@ class WebRTCWrapper(
                             Log.e("ANTON", it.toString(), it)
                         })
             }
-        }*/
+        }
 
     }
 
-    private fun onAddStream(stream: MediaStream) {
-        remoteStreamPublisher.onNext(stream)
+    private fun onAddStream(stream: MediaStream,userDto:UserDto? = null) {
+        remoteStreamPublisher.onNext(stream to userDto)
     }
 
     private fun onRemoveStream(stream: MediaStream) {
-        remoteStreamPublisher.onNext(stream)
+        //remoteStreamPublisher.onNext(stream)
     }
 
     private val iceConnectionStatePublisher = PublishSubject.create<PeerConnection.IceConnectionState>()
     private val localStreamPublisher = PublishSubject.create<MediaStream>()
-    private val remoteStreamPublisher = PublishSubject.create<MediaStream>()
+    private val remoteStreamPublisher = PublishSubject.create<Pair<MediaStream,UserDto?>>()
     fun observeIceConnectionStateChange() = iceConnectionStatePublisher
     fun observeRemoteStream() = remoteStreamPublisher
     fun observeLocalStream() = localStreamPublisher
@@ -340,19 +342,19 @@ class WebRTCWrapper(
         val iceServers = arrayListOf(
                 PeerConnection.IceServer.builder("stun:stun.l.google.com:19302"/*"stun:89.249.28.54:3478"*/).createIceServer()
         )
-
+        var handleId = newPublisherResponse.handleId
         val remotePeer = peerConnectionFactory.createPeerConnection(
                 iceServers,
                 peerConnectionConstraints,
                 PeerConnectionObserver(
                         onIceCandidateCb = {
-                            onIceCandidate(it)
+                            onIceCandidate(it,handleId)
                         },
                         onIceConnectionChange = {
                             iceConnectionStatePublisher.onNext(it)
                         },
                         onAddStreamCb = {
-                            onAddStream(it)
+                            onAddStream(it,newPublisherResponse.user)
                         },
                         onRemoveStreamCb = {
                             onRemoveStream(it)
