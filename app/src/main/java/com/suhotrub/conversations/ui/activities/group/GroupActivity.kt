@@ -73,10 +73,9 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
         group_users_rv.adapter = adapter
 
         group_users_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 canScroll = ((group_users_rv.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition()
                         ?: 0) < 2
-
             }
         })
 

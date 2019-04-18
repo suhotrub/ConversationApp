@@ -1,5 +1,6 @@
 package com.suhotrub.conversations.base.di.modules.network;
 
+import com.google.firebase.iid.FirebaseInstanceId
 import com.suhotrub.conversations.interactor.user.TokenStorage
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -22,7 +23,7 @@ class ServiceInterceptor @Inject constructor(
     private val HEADER_DEVICE_LOCATION_LON = "FM-Device-Location-Lon"
     private val HEADER_DEVICE_LOCATION_CITY = "FM-Device-Location-City"
 
-    private val HEADER_FCM_KEY = "FM-FCM-Token"
+    private val HEADER_FCM_KEY = "FcmToken"
     private val HEADER_PLATFORM_KEY = "FM-Device-Platform"
     private val HEADER_VERSION_KEY = "FM-App-Version"
     private val HEADER_LANG = "FM-Lang"
@@ -56,9 +57,14 @@ class ServiceInterceptor @Inject constructor(
                                         .headers()
                                         .newBuilder()
                                         .add(HEADER_AUTH_KEY, "Bearer ${tokenStorage.getToken()}")
+                                        .add(HEADER_FCM_KEY, FireBaseToken.token.orEmpty())
                                         .build()
                         )
                         .build()
         )
     }
+}
+
+object FireBaseToken {
+    var token: String? = null
 }

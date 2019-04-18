@@ -1,9 +1,11 @@
 package com.suhotrub.conversations.ui.activities.call
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.support.transition.TransitionManager
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
 import com.suhotrub.conversations.R
 import com.suhotrub.conversations.model.user.UserDto
@@ -47,13 +49,10 @@ class PublisherView @JvmOverloads constructor(context: Context, attrs: Attribute
         mediaStream.videoTracks[0].setEnabled(true)
         mediaStream.videoTracks[0].addSink(surface_view)
 
-        /*surface_view.init(eglseBaseContext*//*, o
-        }*//*)*/
-
-
 
         username.text = userDto.login
         makeInfoVisible()
+
         mute.setOnClickListener {
             if (mediaStream.audioTracks[0].enabled()) {
                 mute.setImageResource(R.drawable.ic_volume_off_white_24dp)
@@ -65,12 +64,19 @@ class PublisherView @JvmOverloads constructor(context: Context, attrs: Attribute
         }
     }
 
+    private fun changeAlpha(view: View, to: Float){
+        ObjectAnimator.ofFloat(view, "alpha", view.alpha, to)
+                .setDuration(400)
+                .start()
+    }
+
     var showed = false
     fun makeInfoVisible() {
         showed = true
-        TransitionManager.beginDelayedTransition(this)
-        username.alpha = 1F
-        bottom_panel.alpha = 1F
+
+        changeAlpha(username,1F)
+        changeAlpha(bottom_panel,1F)
+
         postDelayed({
             makeInvisible()
 
@@ -79,9 +85,9 @@ class PublisherView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     fun makeInvisible() {
         showed = false
-        TransitionManager.beginDelayedTransition(this)
-        username.alpha = 0F
-        bottom_panel.alpha = 0F
+
+        changeAlpha(username,0F)
+        changeAlpha(bottom_panel,0F)
     }
 
     override fun performClick(): Boolean {

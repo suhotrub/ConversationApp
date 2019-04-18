@@ -11,7 +11,9 @@ import com.suhotrub.conversations.ui.activities.auth.signin.SignInActivity
 import com.suhotrub.conversations.ui.activities.main.MainActivity
 import com.suhotrub.conversations.ui.util.subscribeIoHandleError
 import dagger.android.AndroidInjection
+import io.reactivex.Observable
 import retrofit2.HttpException
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class SplashActivity : AppCompatActivity() {
@@ -31,7 +33,16 @@ class SplashActivity : AppCompatActivity() {
 
 
         subscribeIoHandleError(
-                usersInteractor.getCurrent().retry { t -> (t as? HttpException)?.code() != 401 },
+                usersInteractor.getCurrent().retryWhen { t ->
+
+                    t.flatMap {
+                        if ((t as? HttpException)?.code() != 401)
+                            Observable.timer(1,TimeUnit.SECONDS)
+                        else
+                            Observable.error(it)
+                    }
+
+                },
                 {
                     if (usersInteractor.isLoggedIn())
                         startActivity(Intent(this, MainActivity::class.java))
