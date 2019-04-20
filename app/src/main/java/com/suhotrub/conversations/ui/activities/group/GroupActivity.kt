@@ -129,7 +129,7 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
                         .apply {
                             messages.forEach {
                                 add(it,
-                                        if (it.user.login != usersRepository.getCurrentUser()?.login)
+                                        if (it.user?.login != usersRepository.getCurrentUser()?.login)
                                             messageItemController
                                         else
                                             sentMessageItemController

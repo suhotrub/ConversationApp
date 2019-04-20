@@ -16,4 +16,9 @@ interface CallView: MvpView{
 
     @StateStrategyType(SkipStrategy::class)
     fun showMessage(text:String)
+
+    @StateStrategyType(SkipStrategy::class)
+    fun onRemoteStreamUnpublished(handleId:Long)
+
+
 }

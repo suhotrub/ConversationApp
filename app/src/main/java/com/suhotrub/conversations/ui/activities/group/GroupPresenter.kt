@@ -1,8 +1,6 @@
 package com.suhotrub.conversations.ui.activities.group
 
-import android.graphics.Canvas
 import android.util.Log
-import android.widget.TextView
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.suhotrub.conversations.base.di.scopes.ActivityScope
@@ -68,7 +66,7 @@ class GroupPresenter @Inject constructor(
         }
 
         messages.add(0, MessageDto(currentMessage, groupDto.name
-                ?: "", null, usersRepository.getCurrentUser()!!))
+                ?: "", null, null, usersRepository.getCurrentUser()!!))
         viewState.scrollToBottom()
 
         viewState.renderMessages(messages)

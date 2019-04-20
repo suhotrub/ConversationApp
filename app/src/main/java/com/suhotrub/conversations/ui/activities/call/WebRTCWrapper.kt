@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.suhotrub.conversations.interactor.signalr.MainHubInteractor
 import com.suhotrub.conversations.interactor.signalr.invokeEvent
+import com.suhotrub.conversations.model.group.GroupDto
 import com.suhotrub.conversations.model.user.UserDto
 import com.suhotrub.conversations.ui.util.subscribe
 import com.suhotrub.conversations.ui.util.subscribeIoHandleError
@@ -15,7 +16,8 @@ import java.util.concurrent.Executor
 
 class WebRTCWrapper(
         private val context: Context,
-        private val mainHubInteractor: MainHubInteractor
+        private val mainHubInteractor: MainHubInteractor,
+        private val groupdDto: GroupDto
 ) {
 
     @Volatile
@@ -98,7 +100,12 @@ class WebRTCWrapper(
             else
                 offerRequests.add(it)
         }
-
+        subscribe(mainHubInteractor.observeEvent("Unpublished", NewPublisherResponse::class.java))
+        {
+            it.handleId?.let {
+                remoteStreamUnpublished.onNext(it)
+            }
+        }
     }
 
     private fun initLocalPeerConnection() {
@@ -143,7 +150,7 @@ class WebRTCWrapper(
     }
 
     // INIT LISTENERS
-    private fun onIceCandidate(iceCandidate: IceCandidate,handleId:Long? = null) {
+    private fun onIceCandidate(iceCandidate: IceCandidate, handleId: Long? = null) {
         executor.execute {
             mainHubInteractor.safeOperation {
                 subscribeIoHandleError(
@@ -167,7 +174,7 @@ class WebRTCWrapper(
 
     }
 
-    private fun onAddStream(stream: MediaStream,userDto:UserDto? = null) {
+    private fun onAddStream(stream: MediaStream, userDto: UserDto? = null) {
         remoteStreamPublisher.onNext(stream to userDto)
     }
 
@@ -177,9 +184,11 @@ class WebRTCWrapper(
 
     private val iceConnectionStatePublisher = PublishSubject.create<PeerConnection.IceConnectionState>()
     private val localStreamPublisher = PublishSubject.create<MediaStream>()
-    private val remoteStreamPublisher = PublishSubject.create<Pair<MediaStream,UserDto?>>()
+    private val remoteStreamPublisher = PublishSubject.create<Pair<MediaStream, UserDto?>>()
+    private val remoteStreamUnpublished = PublishSubject.create<Long>()
     fun observeIceConnectionStateChange() = iceConnectionStatePublisher
     fun observeRemoteStream() = remoteStreamPublisher
+    fun observeUnpublished() = remoteStreamUnpublished
     fun observeLocalStream() = localStreamPublisher
 
 
@@ -292,7 +301,7 @@ class WebRTCWrapper(
                                                             sdp = sdpCreateResult.descriptor.description,
                                                             type = sdpCreateResult.descriptor.type.canonicalForm()
                                                     ),
-                                                    groupGuid = ""
+                                                    groupGuid = groupdDto.groupGuid
                                             )),
                                     {
                                         Log.d("ANTON", it.toString())
@@ -338,6 +347,7 @@ class WebRTCWrapper(
     // OBSERVING OFFER
 
     private fun onOfferReceived(newPublisherResponse: NewPublisherResponse) {
+        newPublisherResponse.user?.handleId = newPublisherResponse.handleId
 
         val iceServers = arrayListOf(
                 PeerConnection.IceServer.builder("stun:stun.l.google.com:19302"/*"stun:89.249.28.54:3478"*/).createIceServer()
@@ -348,13 +358,13 @@ class WebRTCWrapper(
                 peerConnectionConstraints,
                 PeerConnectionObserver(
                         onIceCandidateCb = {
-                            onIceCandidate(it,handleId)
+                            onIceCandidate(it, handleId)
                         },
                         onIceConnectionChange = {
                             iceConnectionStatePublisher.onNext(it)
                         },
                         onAddStreamCb = {
-                            onAddStream(it,newPublisherResponse.user)
+                            onAddStream(it, newPublisherResponse.user)
                         },
                         onRemoveStreamCb = {
                             onRemoveStream(it)
@@ -366,8 +376,8 @@ class WebRTCWrapper(
             sendAnswer(remotePeer, newPublisherResponse)
         },
                 SessionDescription(
-                        SessionDescription.Type.fromCanonicalForm(newPublisherResponse.answer.type),
-                        newPublisherResponse.answer.sdp
+                        SessionDescription.Type.fromCanonicalForm(newPublisherResponse.answer?.type),
+                        newPublisherResponse.answer?.sdp
                 ))
 
         //TODO в callback выше
@@ -383,7 +393,7 @@ class WebRTCWrapper(
                     mainHubInteractor.safeOperation {
 
                         it.invoke("AnswerNewPublisher", AnswerNewPublisherRequest(
-                                handleId = newPublisherResponse.handleId,
+                                handleId = newPublisherResponse.handleId ?: 0,
                                 answer = Jsep(sdp?.type?.canonicalForm(), sdp?.description)
                         ))
                     }
@@ -408,7 +418,7 @@ class WebRTCWrapper(
             localPeer?.dispose()
             connetions.forEach {
                 it.close()
-                it.dispose()
+                //it.dispose()
             }
             try {
                 localVideoCapturer?.stopCapture()
@@ -426,6 +436,10 @@ class WebRTCWrapper(
 
             rootEglBase.detachCurrent()
             rootEglBase.release()
+
+            connetions.forEach {
+                // it.dispose()
+            }
         }
     }
 }

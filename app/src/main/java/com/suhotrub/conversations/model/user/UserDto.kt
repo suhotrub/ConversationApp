@@ -8,5 +8,6 @@ data class UserDto(
         val userGuid:String = "",
         val name: String? = null,
         val login: String? = null,
-        val surname: String? = null
+        val surname: String? = null,
+        var handleId: Long? = null
 ) : Parcelable

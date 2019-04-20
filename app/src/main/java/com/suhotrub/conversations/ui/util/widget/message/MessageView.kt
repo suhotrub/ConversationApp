@@ -18,7 +18,7 @@ class MessageView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     }
 
     fun bind(message: MessageDto) {
-        message_user_name.setTextOrGone("${message.user.name} ${message.user.surname}")
+        message_user_name.setTextOrGone("${message.user?.name} ${message.user?.surname}")
         message_text.setTextOrGone(message.text)
         message_time.setTextOrGone(message.time?.toHHmm())
     }

@@ -1,11 +1,14 @@
 package com.suhotrub.conversations.base
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.RingtoneManager
+import android.os.Build
+import android.os.Parcelable
 import android.support.v4.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -13,11 +16,9 @@ import com.google.gson.Gson
 import com.suhotrub.conversations.R
 import com.suhotrub.conversations.model.group.GroupDto
 import com.suhotrub.conversations.model.messages.MessageDto
-import com.suhotrub.conversations.ui.activities.call.CallActivity
+import com.suhotrub.conversations.ui.activities.incomingcall.IncomingCallActivity
 import com.suhotrub.conversations.ui.activities.main.MainActivity
-import com.suhotrub.conversations.ui.activities.splash.SplashActivity
-
-
+import kotlinx.android.parcel.Parcelize
 
 
 class FCMService : FirebaseMessagingService() {
@@ -58,23 +59,37 @@ class FCMService : FirebaseMessagingService() {
                 PendingIntent.FLAG_ONE_SHOT)
 
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationBuilder = NotificationCompat.Builder(this)
+
+        val notificationManager: NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val mChannel = NotificationChannel("ConversationFCM", "ConversationsApp", importance)
+            mChannel.description = "messaging"
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(mChannel)
+        } else {
+            notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        }
+
+        val notificationBuilder = NotificationCompat.Builder(this, "ConversationFCM")
                 .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_logo))
                 .setSmallIcon(R.mipmap.ic_logo)
-                .setContentTitle(messageDto.groupName)
-                .setContentText(messageDto.text)
+                .setContentTitle(messageDto.groupName ?: "Unknown")
+                .setContentText(messageDto.text ?: "Empty message")
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent)
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        notificationManager.notify(0, notificationBuilder.build())
+        notificationManager.notify(124653, notificationBuilder.build())
     }
 
     fun startIncomingCallActivity(incomingCallDto: IncomingCallDto) {
-        startActivity(Intent(this, CallActivity::class.java))
+        startActivity(IncomingCallActivity.prepareIntent(this, incomingCallDto).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 }
 
-data class IncomingCallDto(val group: GroupDto)
+@Parcelize
+data class IncomingCallDto(val group: GroupDto) : Parcelable

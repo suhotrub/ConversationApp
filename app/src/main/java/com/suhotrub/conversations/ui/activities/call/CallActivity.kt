@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -57,6 +56,18 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnClickListener {
         view1.setZOrderMediaOverlay(true)
 
         mediaStream.videoTracks[0].addSink(view1)
+    }
+
+    override fun onRemoteStreamUnpublished(handleId: Long) {
+        listOf(flex, video_container).forEach {
+            for (i in 0 until it.childCount) {
+                if ((it.getChildAt(i) as? PublisherView)?.userDto?.handleId == handleId) {
+                    (it.getChildAt(i) as? PublisherView)?.release()
+                    ((it.getChildAt(i) as? PublisherView)?.parent as? ViewGroup)?.removeViewAt(i)
+                    return
+                }
+            }
+        }
     }
 
     val MAGIC_NUMBER = 1337

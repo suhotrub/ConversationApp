@@ -31,9 +31,11 @@ class PublisherView @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     var stream: MediaStream? = null
+    var userDto: UserDto? = null
 
     fun setStream(eglseBaseContext: EglBase.Context?, mediaStream: MediaStream, userDto: UserDto) {
         stream = mediaStream
+        this.userDto = userDto
 
         surface_view.init(eglseBaseContext, object : RendererCommon.RendererEvents {
             override fun onFirstFrameRendered() {

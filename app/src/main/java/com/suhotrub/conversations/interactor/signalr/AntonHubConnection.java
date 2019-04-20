@@ -161,7 +161,7 @@ public class AntonHubConnection implements HubConnection {
                             }
                             if (type == 3) {
                                 hubMessage.setTarget(m);
-                                List<HubEventListener> hubEventListeners = eventListeners.get(hubMessage.getInvocationId());
+                                  List<HubEventListener> hubEventListeners = eventListeners.get(hubMessage.getInvocationId());
                                 if (hubEventListeners != null) {
                                     for (HubEventListener listener : hubEventListeners) {
                                         listener.onEventMessage(hubMessage);
