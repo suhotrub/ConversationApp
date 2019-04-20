@@ -45,7 +45,7 @@ class MainHubInteractor @Inject constructor(
             }
         }
 
-        hubConnection = AntonHubConnection("${baseUrl}signalr?access_token=${tokenStorage.getToken()}", "Bearer ${tokenStorage.getToken()}")
+        hubConnection = ResponseHubConnection("${baseUrl}signalr?access_token=${tokenStorage.getToken()}", "Bearer ${tokenStorage.getToken()}")
 
         onHubConnected = BehaviorSubject.create()
 
@@ -148,7 +148,7 @@ class MainHubInteractor @Inject constructor(
 
 inline fun <reified T : Any> HubConnection.invokeEvent(eventName: String, vararg params: Any): Observable<T> {
     val kekEventName =
-            if (this is AntonHubConnection) {
+            if (this is ResponseHubConnection) {
                 this.invokeCallback(eventName, *params.asList().toTypedArray())
             } else {
                 this.invoke(eventName, *params.asList().toTypedArray())
@@ -178,16 +178,3 @@ inline fun <reified T : Any> HubConnection.observeEventOnce(eventName: String): 
     subscribeToEvent(eventName, listener)
     return observable
 }
-
-/*
-inline fun <reified T : Any> HubConnection.observeEvent(eventName: String): Observable<T> {
-
-    */
-/*val observable = BehaviorSubject.create<T>()
-    val listener = HubEventListener {
-        observable.onNext(Gson().fromJson<T>(it.arguments[0], T::class.java))
-    }
-    subscribeToEvent(eventName, listener)
-    return observable*//*
-
-}*/

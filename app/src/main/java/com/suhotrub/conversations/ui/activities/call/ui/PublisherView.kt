@@ -1,4 +1,4 @@
-package com.suhotrub.conversations.ui.activities.call
+package com.suhotrub.conversations.ui.activities.call.ui
 
 import android.animation.ObjectAnimator
 import android.content.Context

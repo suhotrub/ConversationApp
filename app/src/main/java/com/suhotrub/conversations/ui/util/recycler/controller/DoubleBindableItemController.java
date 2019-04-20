@@ -1,5 +1,7 @@
 package com.suhotrub.conversations.ui.util.recycler.controller;
 
+import com.suhotrub.conversations.ui.util.recycler.EasyAdapter;
+import com.suhotrub.conversations.ui.util.recycler.ItemList;
 import com.suhotrub.conversations.ui.util.recycler.holder.DoubleBindableViewHolder;
 import com.suhotrub.conversations.ui.util.recycler.item.DoubleBindableItem;
 

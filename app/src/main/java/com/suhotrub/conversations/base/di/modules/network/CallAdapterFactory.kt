@@ -14,14 +14,26 @@ import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
 
+
+/**
+ * Фабрика для создания адаптеров для результата выполнения запроса
+ * @constructor конструктор фабрики
+ */
 @Singleton
-class CallAdapterFactory @Inject constructor() : CallAdapter.Factory() {
+class CallAdapterFactory @Inject constructor(): CallAdapter.Factory() {
 
 
+    /**
+     * Обертка RxJava над обычниой фабрикой для создания адаптеров
+     */
     private val rxJava2CallAdapterFactory: RxJava2CallAdapterFactory = RxJava2CallAdapterFactory.create()
-    private val retryCalls: CopyOnWriteArrayList<String> = CopyOnWriteArrayList()
-    private val singleThreadExecutor: Executor = Executors.newSingleThreadExecutor()
 
+    /**
+     * Возвращает адаптер
+     * @param returnType возвращаемый тип
+     * @param annotations аннотации
+     * @param retrofit клиент для работы с HTTP запросами
+     */
     override fun get(returnType: Type?, annotations: Array<out Annotation>?, retrofit: Retrofit?): CallAdapter<*, *>? {
         val rxCallAdapter = rxJava2CallAdapterFactory.get(returnType, annotations, retrofit) as? CallAdapter<*, Observable<*>>
         return ResultCallAdapter(returnType, rxCallAdapter)

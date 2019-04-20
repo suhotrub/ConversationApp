@@ -1,4 +1,4 @@
-package com.suhotrub.conversations.ui.activities.call
+package com.suhotrub.conversations.model.webrtc
 
 import com.suhotrub.conversations.model.user.UserDto
 

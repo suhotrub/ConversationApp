@@ -32,7 +32,7 @@ import java.util.UUID;
 
 import javax.net.ssl.SSLSocketFactory;
 
-public class AntonHubConnection implements HubConnection {
+public class ResponseHubConnection implements HubConnection {
     private static String SPECIAL_SYMBOL = "\u001E";
     private static String TAG = "WebSockets";
 
@@ -45,7 +45,7 @@ public class AntonHubConnection implements HubConnection {
     private String connectionId = null;
     private String authHeader;
 
-    public AntonHubConnection(String hubUrl, String authHeader) {
+    public ResponseHubConnection(String hubUrl, String authHeader) {
         this.authHeader = authHeader;
         parsedUri = Uri.parse(hubUrl);
     }
@@ -57,17 +57,9 @@ public class AntonHubConnection implements HubConnection {
 
         Runnable runnable;
         if (connectionId == null) {
-            runnable = new Runnable() {
-                public void run() {
-                    getConnectionId();
-                }
-            };
+            runnable = this::getConnectionId;
         } else {
-            runnable = new Runnable() {
-                public void run() {
-                    connectClient();
-                }
-            };
+            runnable = this::connectClient;
         }
         new Thread(runnable).start();
     }
@@ -90,7 +82,7 @@ public class AntonHubConnection implements HubConnection {
             int responseCode = connection.getResponseCode();
 
             if (responseCode == 200) {
-                String result = AntonHubConnection.InputStreamConverter.convert(connection.getInputStream());
+                String result = ResponseHubConnection.InputStreamConverter.convert(connection.getInputStream());
                 JsonElement jsonElement = gson.fromJson(result, JsonElement.class);
                 String connectionId = jsonElement.getAsJsonObject().get("connectionId").getAsString();
                 JsonElement availableTransportsElements = jsonElement.getAsJsonObject().get("availableTransports");
@@ -264,13 +256,11 @@ public class AntonHubConnection implements HubConnection {
         map.put("target", event);
         map.put("arguments", parameters);
         map.put("nonblocking", false);
-        Runnable runnable = new Runnable() {
-            public void run() {
-                try {
-                    client.send(gson.toJson(map) + SPECIAL_SYMBOL);
-                } catch (Exception e) {
-                    error(e);
-                }
+        Runnable runnable = () -> {
+            try {
+                client.send(gson.toJson(map) + SPECIAL_SYMBOL);
+            } catch (Exception e) {
+                error(e);
             }
         };
         new Thread(runnable).start();

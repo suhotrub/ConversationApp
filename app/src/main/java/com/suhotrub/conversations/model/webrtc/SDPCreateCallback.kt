@@ -1,4 +1,4 @@
-package com.suhotrub.conversations.ui.activities.call
+package com.suhotrub.conversations.model.webrtc
 
 import org.webrtc.SdpObserver
 import org.webrtc.SessionDescription

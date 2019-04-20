@@ -1,4 +1,4 @@
-package com.suhotrub.conversations.ui.activities.call
+package com.suhotrub.conversations.model.webrtc
 
 import android.util.Log
 import org.webrtc.*

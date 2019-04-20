@@ -12,44 +12,52 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 import javax.inject.Singleton
 
+/**
+ * HTTP запросы для работы с группой
+ */
 @Singleton
 interface GroupsApi {
 
-
+    /**
+     * Приглашение пользователя в группу
+     * @param body параметры приглашения
+     */
     @POST("Groups/invite")
     fun invite(
-            @Body groupName: GroupInviteDto
+            @Body groupInviteDto: GroupInviteDto
     ): Observable<ResponseBody>
 
+    /**
+     * Создает группу
+     * @param body параметры группы
+     */
     @POST("Groups/create")
     fun create(
             @Body body: GroupCreateDto
     ): Observable<ResponseBody>
 
+    /**
+     * Возвращает группы, в которых состоит текущий пользователь
+     * @param pageSize размер страницы
+     * @param page номер страницы
+     */
     @GET("Groups/joined")
     fun getJoinedGroups(
             @Query("pageSize") pageSize: Int,
             @Query("page") page: Int
     ): Observable<GroupsDto>
 
-    @GET("Groups/created")
-    fun getCreatedGroups(
-            @Query("pageSize") pageSize: Int,
-            @Query("page") page: Int
-    ): Observable<GroupsDto>
-
+    /**
+     * Возвращает пользователей состоящих в группе
+     * @param groupGuid guid группы
+     * @param pageSize размер страницы
+     * @param page номер страницы
+     */
     @GET("Groups/participants")
     fun getGroupParticicpants(
-            @Query("groupGuid") groupName: String,
+            @Query("groupGuid") groupGuid: String,
             @Query("pageSize") pageSize: Int,
             @Query("page") page: Int
     ): Observable<UsersDto>
-
-    @GET("Groups/find")
-    fun getGroupsByName(
-            @Query("pattern") name: String,
-            @Query("pageSize") pageSize: Int,
-            @Query("page") page: Int
-    ): Observable<GroupsDto>
 
 }

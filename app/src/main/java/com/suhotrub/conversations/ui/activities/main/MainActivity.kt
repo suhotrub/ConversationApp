@@ -19,7 +19,6 @@ import com.suhotrub.conversations.ui.util.recycler.PaginationableAdapter
 import com.suhotrub.conversations.ui.util.ui.showError
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
-import retrofit2.HttpException
 import javax.inject.Inject
 
 class MainActivity : MvpAppCompatActivity(), MainView {
@@ -77,10 +76,10 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     override fun showErrorSnackbar(t: Throwable) =
             showError(t)
 
-    override fun renderChats(chats: List<GroupDto>) {
+    override fun renderChats(list: List<GroupDto>) {
         adapter.setItems(
                 ItemList.create()
-                        .addAll(chats, chatItemController)
+                        .addAll(list, chatItemController)
         )
         adapter.setState(PaginationState.READY)
     }

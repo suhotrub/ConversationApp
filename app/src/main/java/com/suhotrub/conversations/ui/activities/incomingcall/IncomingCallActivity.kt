@@ -7,12 +7,10 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.jaeger.library.StatusBarUtil
 import com.suhotrub.conversations.R
-import com.suhotrub.conversations.base.IncomingCallDto
+import com.suhotrub.conversations.model.webrtc.IncomingCallDto
 import com.suhotrub.conversations.ui.activities.call.CallActivity
 import com.suhotrub.conversations.ui.util.ui.setTextOrGone
 import kotlinx.android.synthetic.main.activity_incoming_call.*
-import android.media.Ringtone
-
 
 
 class IncomingCallActivity : AppCompatActivity() {

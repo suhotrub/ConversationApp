@@ -15,8 +15,14 @@ import dagger.android.support.DaggerApplication
 import io.reactivex.plugins.RxJavaPlugins
 import timber.log.Timber
 
+/**
+ * Приложение
+ */
 class App : DaggerApplication() {
 
+    /**
+     * Возвращает ижектор для активностей
+     */
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
         appComponent = DaggerAppComponent.builder()
                 .application(this)
@@ -25,9 +31,19 @@ class App : DaggerApplication() {
         return appComponent
     }
 
+    /**
+     * Компонент приложения
+     */
     lateinit var appComponent: AppComponent
+
+    /**
+     * Текущая активносить
+     */
     var currentActivity: Activity? = null
 
+    /**
+     * Вызывается при создании приложения
+     */
     override fun onCreate() {
         super.onCreate()
 
@@ -42,10 +58,16 @@ class App : DaggerApplication() {
         initFirebase()
     }
 
+    /**
+     * Инициализирует Timber
+     */
     private fun initTimber() {
         Timber.plant(Timber.DebugTree())
     }
 
+    /**
+     * Инициализирует Firebase
+     */
     private fun initFirebase(){
         FirebaseInstanceId.getInstance().instanceId
                 .addOnCompleteListener(OnCompleteListener { task ->
@@ -60,6 +82,9 @@ class App : DaggerApplication() {
                 })
     }
 
+    /**
+     * Подписывается на жизненый цикл активностей
+     */
     fun initActivityLifeycleCallbacks() {
         registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityPaused(activity: Activity?) {

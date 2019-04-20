@@ -19,13 +19,26 @@ import javax.inject.Singleton
 @Module
 class NetworkModule {
 
+    /**
+     * Тэг для логгирования
+     */
     private val HTTP_LOG_TAG = "OkHttp"
 
+    /**
+     * Поставляет базовый URL
+     */
     @Provides
     @Named("BASE_URL")
     @Singleton
     fun provideBaseUrl() = "https://webrtc.ninja/api/"
 
+    /**
+     * Возвращает Retrifot-клиент для работы с запросами
+     * @param okHttpClient клиент для работы с HTTP запросами
+     * @param callAdapterFactory фабрика для адаптеров результата выполнения запросов
+     * @param gson парсер JSON в объекты Java
+     * @param apiUrl базовый URL API
+     */
     @Provides
     @Singleton
     internal fun provideRetrofit(okHttpClient: OkHttpClient,
@@ -39,10 +52,17 @@ class NetworkModule {
                     .addCallAdapterFactory(callAdapterFactory)
                     .build()
 
+    /**
+     * Возвращает парсер JSON в объекты Java
+     */
     @Provides
     @Singleton
     internal fun provideGson() = GsonBuilder().create()
 
+
+    /**
+     * Возвращает interceptor для логгирования запросов
+     */
     @Provides
     @Singleton
     internal fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {

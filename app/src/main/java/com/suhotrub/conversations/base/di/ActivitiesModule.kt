@@ -17,41 +17,71 @@ import com.suhotrub.conversations.ui.activities.splash.SplashActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
+/**
+ * Модуль для иньекций активностей и их зависимостей
+ */
 @Module
 abstract class ActivitiesModule {
 
+    /**
+     * Инжектор SplashActivity
+     */
     @ActivityScope
     @ContributesAndroidInjector
     abstract fun bindSplashActivity(): SplashActivity
 
+    /**
+     * Инжектор MainActivity
+     */
     @ActivityScope
     @ContributesAndroidInjector(modules = [(MainModule::class)])
     abstract fun bindMainActivity(): MainActivity
 
+    /**
+     * Инжектор SignInActivty
+     */
     @ActivityScope
     @ContributesAndroidInjector
     abstract fun bindSignInActivity(): SignInActivity
 
+    /**
+     * Инжектор SignUpActivity
+     */
     @ActivityScope
     @ContributesAndroidInjector
     abstract fun bindSignUpActivity(): SignUpActivity
 
+    /**
+     * Инжектор CreateGroupActivity
+     */
     @ActivityScope
     @ContributesAndroidInjector
     abstract fun bindCreateGroupActivity(): CreateGroupActivity
 
+    /**
+     * Инжектор FindUserActivity
+     */
     @ActivityScope
     @ContributesAndroidInjector
     abstract fun bindFindUserActivity(): FindUserActivity
 
+    /**
+     * Инжектор GroupActivity
+     */
     @ActivityScope
     @ContributesAndroidInjector(modules = [(GroupModule::class)])
     abstract fun bindGroupActivity(): GroupActivity
 
+    /**
+     * Инжектор GroupInfoActivity
+     */
     @ActivityScope
     @ContributesAndroidInjector(modules = [(GroupInfoModule::class)])
     abstract fun bindGroupInfoActivity(): GroupInfoActivity
 
+    /**
+     * Инжектор CallActivity
+     */
     @ActivityScope
     @ContributesAndroidInjector(modules = [(CallMdule::class)])
     abstract fun bindCallActivity(): CallActivity
