@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.util.Pair
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -14,7 +13,6 @@ import android.view.Window
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import com.jaeger.library.StatusBarUtil
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.suhotrub.conversations.R
 import com.suhotrub.conversations.interactor.user.UsersRepository
@@ -48,7 +46,7 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
 
     private val adapter = PaginationableAdapter()
     private val messageItemController = MessageItemController({})
-    private val sentMessageItemController = SentMessageItemController({})
+    private val sentMessageItemController = SentMessageItemController()
 
     var canScroll = true
 
@@ -57,7 +55,7 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         val fade = Fade()
-        fade.excludeTarget(android.R.id.statusBarBackground,true)
+        fade.excludeTarget(android.R.id.statusBarBackground, true)
         fade.excludeTarget(R.id.appbar, true)
         fade.excludeTarget(R.id.toolbar, true)
 
@@ -111,13 +109,15 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
         }
 
         group_call_btn.setOnClickListener {
-            startActivity(CallActivity.prepareIntent(this@GroupActivity,groupDto))
+            startActivity(CallActivity.prepareIntent(this@GroupActivity, groupDto))
         }
     }
+
     lateinit var groupDto: GroupDto
     override fun renderGroup(groupDto: GroupDto) {
         this.groupDto = groupDto
         group_title_tv.setTextOrGone(groupDto.name)
+        group_users_count_tv.setTextOrGone("${groupDto.participants} участников")
     }
 
     override fun showErrorSnackbar(t: Throwable) =
@@ -138,7 +138,6 @@ class GroupActivity : MvpAppCompatActivity(), GroupActivityView {
                         }
         )
 
-        //group_users_count_tv.setTextOrGone("${users.size} долбаёбов")
         adapter.setState(PaginationState.READY)
     }
 

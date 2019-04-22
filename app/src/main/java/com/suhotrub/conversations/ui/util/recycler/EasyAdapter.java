@@ -72,40 +72,12 @@ public class EasyAdapter extends RecyclerView.Adapter {
     }
 
     /**
-     * set data with controller for rendering
-     * adapter automatically calls necessary methods notify... if {@link #autoNotifyOnSetItemsEnabled} sets
-     *
-     * @param data
-     * @param itemController controller for data
-     * @param <T>            type of data
-     */
-    public <T> void setData(@NonNull Collection<T> data, @NonNull BindableItemController<T, ? extends RecyclerView.ViewHolder> itemController) {
-        setItems(ItemList.create(data, itemController));
-    }
-
-    /**
-     * Sets if auto notify is enabled.
-     *
-     * @see #autoNotify()
-     */
-    public void setAutoNotifyOnSetItemsEnabled(boolean enableAutoNotifyOnSetItems) {
-        this.autoNotifyOnSetItemsEnabled = enableAutoNotifyOnSetItems;
-    }
-
-    /**
      * Toggle whether {@link FirstInvisibleItemController} is enabled
      *
      * @see FirstInvisibleItemController
      */
     public void setFirstInvisibleItemEnabled(boolean enableFirstInvisibleItem) {
         this.firstInvisibleItemEnabled = enableFirstInvisibleItem;
-    }
-
-    /**
-     * @param infiniteScroll make list infinite scrolling
-     */
-    public void setInfiniteScroll(boolean infiniteScroll) {
-        this.infiniteScroll = infiniteScroll;
     }
 
     /**

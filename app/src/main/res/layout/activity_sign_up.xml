@@ -75,7 +75,7 @@
                 android:layout_marginStart="30dp"
                 android:backgroundTint="#191D1D26"
                 android:ems="10"
-                android:hint="Email"
+                android:hint="Username"
                 android:inputType="textEmailAddress"
                 android:textAppearance="@style/AvenirRegular.15.Dark"
                 android:textColorHint="#771D1D26" />
@@ -144,7 +144,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:alpha="0.5"
-                    android:text="Don't have an account?"
+                    android:text="Already registered?"
                     android:textAppearance="@style/AvenirRegular.13.Gray" />
 
                 <TextView

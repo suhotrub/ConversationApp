@@ -4,7 +4,7 @@ import com.suhotrub.conversations.base.di.scopes.ActivityScope
 import com.suhotrub.conversations.ui.activities.auth.signin.SignInActivity
 import com.suhotrub.conversations.ui.activities.auth.signup.SignUpActivity
 import com.suhotrub.conversations.ui.activities.call.CallActivity
-import com.suhotrub.conversations.ui.activities.call.CallMdule
+import com.suhotrub.conversations.ui.activities.call.CallModule
 import com.suhotrub.conversations.ui.activities.creategroup.CreateGroupActivity
 import com.suhotrub.conversations.ui.activities.finduser.FindUserActivity
 import com.suhotrub.conversations.ui.activities.group.GroupActivity
@@ -12,7 +12,6 @@ import com.suhotrub.conversations.ui.activities.group.GroupModule
 import com.suhotrub.conversations.ui.activities.groupinfo.GroupInfoActivity
 import com.suhotrub.conversations.ui.activities.groupinfo.GroupInfoModule
 import com.suhotrub.conversations.ui.activities.main.MainActivity
-import com.suhotrub.conversations.ui.activities.main.MainModule
 import com.suhotrub.conversations.ui.activities.splash.SplashActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -34,7 +33,7 @@ abstract class ActivitiesModule {
      * Инжектор MainActivity
      */
     @ActivityScope
-    @ContributesAndroidInjector(modules = [(MainModule::class)])
+    @ContributesAndroidInjector()
     abstract fun bindMainActivity(): MainActivity
 
     /**
@@ -83,6 +82,6 @@ abstract class ActivitiesModule {
      * Инжектор CallActivity
      */
     @ActivityScope
-    @ContributesAndroidInjector(modules = [(CallMdule::class)])
+    @ContributesAndroidInjector(modules = [(CallModule::class)])
     abstract fun bindCallActivity(): CallActivity
 }

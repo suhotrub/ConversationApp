@@ -35,12 +35,13 @@ class FCMService : FirebaseMessagingService() {
                 p0?.data?.let {
                     when (it["type"]) {
                         "CallStarted" -> {
-                            startIncomingCallActivity(
-                                    Gson().fromJson(
-                                            it["data"],
-                                            IncomingCallDto::class.java
-                                    )
-                            )
+                                if ((System.currentTimeMillis() - p0.sentTime) < 30 * 1000)
+                                startIncomingCallActivity(
+                                        Gson().fromJson(
+                                                it["data"],
+                                                IncomingCallDto::class.java
+                                        )
+                                )
                         }
                         "IncomingMessage" -> {
                             showMessagePush(

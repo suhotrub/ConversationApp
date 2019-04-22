@@ -14,6 +14,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.suhotrub.conversations.R
 import com.suhotrub.conversations.model.group.GroupDto
 import com.suhotrub.conversations.model.user.UserDto
+import com.suhotrub.conversations.ui.activities.call.CallActivity
 import com.suhotrub.conversations.ui.activities.finduser.FindUserActivity
 import com.suhotrub.conversations.ui.util.recycler.EasyAdapter
 import com.suhotrub.conversations.ui.util.recycler.ItemList
@@ -38,6 +39,8 @@ class GroupInfoActivity : MvpAppCompatActivity(), GroupInfoView {
 
     val adapter = EasyAdapter()
 
+    lateinit var groupDto: GroupDto
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
 
@@ -60,6 +63,10 @@ class GroupInfoActivity : MvpAppCompatActivity(), GroupInfoView {
         create_group_users_rv.adapter = adapter
         create_group_users_rv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
+        leave_group.setOnClickListener {
+            presenter.leaveGroup()
+        }
+
         create_group_add_member_btn.setOnClickListener {
             startActivityForResult(Intent(this@GroupInfoActivity, FindUserActivity::class.java), 228)
         }
@@ -68,6 +75,9 @@ class GroupInfoActivity : MvpAppCompatActivity(), GroupInfoView {
             onBackPressed()
         }
 
+        group_call_btn.setOnClickListener {
+            startActivity(CallActivity.prepareIntent(this@GroupInfoActivity, groupDto))
+        }
 
     }
 
@@ -81,7 +91,12 @@ class GroupInfoActivity : MvpAppCompatActivity(), GroupInfoView {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun finishActivity() {
+        finish()
+    }
+
     override fun renderGroup(groupDto: GroupDto) {
+        this.groupDto = groupDto
         group_title_tv.setTextOrGone(groupDto.name)
         description.setTextOrGone(groupDto.description)
     }
@@ -91,7 +106,7 @@ class GroupInfoActivity : MvpAppCompatActivity(), GroupInfoView {
                 ItemList.create()
                         .addAll(users, userItemController)
         )
-        group_users_count_tv.setTextOrGone("${users.size} долбаебов")
+        group_users_count_tv.setTextOrGone("${users.size} участников")
     }
 
     companion object {

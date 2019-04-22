@@ -15,7 +15,6 @@ import com.suhotrub.conversations.ui.util.ui.setVisibleOrGone
 import com.suhotrub.conversations.ui.util.ui.showError
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_sign_in.*
-import retrofit2.HttpException
 import javax.inject.Inject
 
 class SignInActivity : MvpAppCompatActivity(), SignInView {
@@ -56,7 +55,7 @@ class SignInActivity : MvpAppCompatActivity(), SignInView {
             showError("Проверьте правильность заполнения полей")
 
 
-    override fun showErrorSnackbar(t: Throwable) =
+        override fun showErrorSnackbar(t: Throwable) =
             showError(t)
 
 

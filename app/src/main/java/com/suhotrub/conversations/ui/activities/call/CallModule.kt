@@ -7,7 +7,7 @@ import dagger.Provides
 
 @Module
 @ActivityScope
-class CallMdule {
+class CallModule {
     @Provides
     @ActivityScope
     fun provideGroupDto(callActivity: CallActivity): GroupDto =

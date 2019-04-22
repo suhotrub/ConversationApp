@@ -16,6 +16,7 @@ import com.suhotrub.conversations.ui.util.subscribe
 import com.suhotrub.conversations.ui.util.subscribeIoHandleError
 import io.reactivex.Observable
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -37,7 +38,8 @@ class GroupPresenter @Inject constructor(
         reload()
 
         subscribeIoHandleError(
-                mainHubInteractor.observeEvent("IncomingMessage", MessageDto::class.java),
+                mainHubInteractor.observeEvent("IncomingMessage", MessageDto::class.java)
+                        .debounce(500, TimeUnit.MILLISECONDS).distinctUntilChanged(),
                 { message ->
                     messages.remove(messages.find { it.time == null && it.text == message.text })
                     messages.add(0, message)
@@ -49,6 +51,15 @@ class GroupPresenter @Inject constructor(
                 {
                     Timber.e(it)
                 })
+
+        reloadUsers()
+    }
+
+    fun reloadUsers() {
+        subscribe(groupsInteractor.getGroupParticipants(groupDto.groupGuid, 0)) {
+            groupDto.participants = it.users.size
+            viewState.renderGroup(groupDto)
+        }
     }
 
     fun observeMessage(textObservable: Observable<String>) =

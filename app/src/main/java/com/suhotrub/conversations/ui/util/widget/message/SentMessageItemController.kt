@@ -7,7 +7,7 @@ import com.suhotrub.conversations.ui.util.recycler.controller.BindableItemContro
 import com.suhotrub.conversations.ui.util.recycler.holder.BindableViewHolder
 import kotlinx.android.synthetic.main.item_message_sent.view.*
 
-class SentMessageItemController(val onClickListener: (MessageDto) -> Unit) : BindableItemController<MessageDto, SentMessageItemController.Holder>() {
+class SentMessageItemController : BindableItemController<MessageDto, SentMessageItemController.Holder>() {
 
     override fun getItemId(data: MessageDto?) =
             (data?.time?.hashCode()?.toLong() ?: 0) +

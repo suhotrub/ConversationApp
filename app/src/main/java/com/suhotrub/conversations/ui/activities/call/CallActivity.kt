@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -37,6 +38,11 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnClickListener {
     fun providePresenter() = presenter
 
     override fun onDestroy() {
+        try {
+            audioManager.isSpeakerphoneOn = isSpeakerPhoneOn;
+            audioManager.mode = oldAudioMode;
+        } catch (t: Throwable) {
+        }
 
         listOf(flex, video_container).forEach {
             for (i in 0 until it.childCount) {
@@ -117,11 +123,25 @@ class CallActivity : MvpAppCompatActivity(), CallView, View.OnClickListener {
         }
     }
 
+    private var oldAudioMode: Int = 0
+    private var isSpeakerPhoneOn: Boolean = true
+
+    private lateinit var audioManager: AudioManager
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
 
         super.onCreate(savedInstanceState)
 
+        try {
+            audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+            oldAudioMode = audioManager.mode;
+            isSpeakerPhoneOn = audioManager.isSpeakerphoneOn;
+
+            audioManager.mode = AudioManager.MODE_IN_CALL
+            audioManager.isSpeakerphoneOn = true
+        } catch (t: Throwable) {
+        }
 
         setContentView(R.layout.activity_call)
 

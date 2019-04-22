@@ -22,11 +22,7 @@ class MainPresenter @Inject constructor(
 
     init {
         subscribe(usersRepository.getCurrent()) {}
-        mainHubInteractor.stopHubConnection()
         mainHubInteractor.createHubConnection()
-        subscribe(mainHubInteractor.observeEvent("IncomingCall",String::class.java)){
-
-        }
     }
 
 
@@ -52,6 +48,7 @@ class MainPresenter @Inject constructor(
     fun reload() {
         offset = 0
         groups.clear()
+        viewState.renderChats(groups)
         loadMore()
     }
 

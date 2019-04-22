@@ -53,7 +53,7 @@ class NetworkModule {
                     .build()
 
     /**
-     * Возвращает парсер JSON в объекты Java
+         * Возвращает парсер JSON в объекты Java
      */
     @Provides
     @Singleton

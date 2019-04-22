@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:alpha="0.6"
-                    android:text="6 долбаебов"
+                    android:text="6 участников  "
                     android:textAppearance="@style/AvenirRegular.13.White"
                     android:transitionName="group_users_count_tv" />
 

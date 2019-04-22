@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.suhotrub.conversations.ui.util.recycler.PaginationState;
 import com.suhotrub.conversations.ui.util.recycler.controller.NoDataItemController;
 import com.suhotrub.conversations.ui.util.recycler.holder.BindableViewHolder;
 import com.suhotrub.conversations.ui.util.recycler.item.NoDataItem;

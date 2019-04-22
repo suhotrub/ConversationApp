@@ -29,7 +29,7 @@ class CallAdapterFactory @Inject constructor(): CallAdapter.Factory() {
     private val rxJava2CallAdapterFactory: RxJava2CallAdapterFactory = RxJava2CallAdapterFactory.create()
 
     /**
-     * Возвращает адаптер
+     * k
      * @param returnType возвращаемый тип
      * @param annotations аннотации
      * @param retrofit клиент для работы с HTTP запросами

@@ -4,7 +4,6 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.suhotrub.conversations.base.di.scopes.ActivityScope
 import com.suhotrub.conversations.interactor.groups.GroupsInteractor
-import com.suhotrub.conversations.interactor.user.UsersInteractor
 import com.suhotrub.conversations.model.group.GroupDto
 import com.suhotrub.conversations.ui.util.subscribe
 import javax.inject.Inject
@@ -13,8 +12,7 @@ import javax.inject.Inject
 @ActivityScope
 class GroupInfoPresenter @Inject constructor(
         private val groupDto: GroupDto,
-        private val groupsInteractor: GroupsInteractor,
-        private val usersInteractor: UsersInteractor
+        private val groupsInteractor: GroupsInteractor
 ) : MvpPresenter<GroupInfoView>() {
 
     init {
@@ -32,6 +30,12 @@ class GroupInfoPresenter @Inject constructor(
     fun addUser(userGuid: String) {
         subscribe(groupsInteractor.inviteToGroup(groupDto.groupGuid, userGuid)) {
             reloadUsers()
+        }
+    }
+
+    fun leaveGroup(){
+        subscribe(groupsInteractor.leaveGroup(groupDto.groupGuid)){
+            viewState.finishActivity()
         }
     }
 

@@ -19,6 +19,6 @@ class UserView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
 
         user_avatar.setImageResource(R.drawable.bg_placeholder_circle)
         user_mail.setTextOrGone(user.login)
-        user_name.setTextOrGone(user.name + " " + user.surname)
+        user_name.setTextOrGone("${user.name.orEmpty()} ${user.surname.orEmpty()}")
     }
 }

@@ -19,11 +19,12 @@ class GroupView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     fun bind(chat: GroupDto) {
 
-        chat_message.setTextOrGone("${chat.lastMessage?.user?.login}: ${chat.lastMessage?.text}")
-        chat_time.setTextOrGone(chat.lastMessage?.time?.toHHmm())
+
+        chat_message.setTextOrGone("${chat.lastMessage?.user?.login}: ${chat.lastMessage?.text}".takeIf { chat.lastMessage?.user != null })
+        chat_time.setTextOrGone(chat.lastMessage?.time?.toHHmm().takeIf { chat.lastMessage?.user != null })
 
         chat_name.setTextOrGone(chat.name)
-        chat_status.setVisibleOrGone(chat.inCall==true)
+        chat_status.setVisibleOrGone(chat.inCall == true)
         //chat_status_text.setTextOrGone(chat.description)
 
         chat_avatar.setImageResource(R.drawable.bg_placeholder_circle)

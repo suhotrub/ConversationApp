@@ -85,7 +85,7 @@ class App : DaggerApplication() {
     /**
      * Подписывается на жизненый цикл активностей
      */
-    fun initActivityLifeycleCallbacks() {
+    private fun initActivityLifeycleCallbacks() {
         registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityPaused(activity: Activity?) {
             }

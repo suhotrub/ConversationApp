@@ -95,7 +95,7 @@ class WebRTCWrapper(
         {
             if (fullyLoaded)
                 executor.execute {
-                    Thread.sleep(1000)
+                    //Thread.sleep(1000)
                     onOfferReceived(it)
                 }
             else
@@ -139,7 +139,7 @@ class WebRTCWrapper(
 
             val localMediaStream = getUserMediaAndAddStream(localPeer!!)
             localStreamPublisher.onNext(localMediaStream)
-            Thread.sleep(1000)
+            //Thread.sleep(1000)
             createOffer(localPeer)
 
         }
@@ -292,7 +292,6 @@ class WebRTCWrapper(
                 try {
                     localPeer.setLocalDescription(SDPSetCallback {
 
-                        //ПИНАЕМ АНТОНА todo в callback выше
                         mainHubInteractor.safeOperation {
                             subscribeIoHandleError(
                                     it.invokeEvent<InititateCallResponse>(
@@ -307,12 +306,12 @@ class WebRTCWrapper(
                                     {
                                         Log.d("ANTON", it.toString())
                                         executor.execute {
-                                            Thread.sleep(1000)
+                                            //Thread.sleep(1000)
                                             localPeer.setRemoteDescription(
                                                     SDPSetCallback {
                                                         fullyLoaded = true
                                                         executor.execute {
-                                                            Thread.sleep(3000)
+                                                            //Thread.sleep(3000)
                                                             offerRequests.forEach {
                                                                 onOfferReceived(it)
                                                             }
@@ -421,6 +420,8 @@ class WebRTCWrapper(
                 it.close()
                 //it.dispose()
             }
+            connetions.clear()
+
             try {
                 localVideoCapturer?.stopCapture()
             } catch (t: Throwable) {
@@ -438,9 +439,7 @@ class WebRTCWrapper(
             rootEglBase.detachCurrent()
             rootEglBase.release()
 
-            connetions.forEach {
-                // it.dispose()
-            }
+
         }
     }
 }

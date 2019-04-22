@@ -27,8 +27,10 @@
                 android:id="@+id/group_call_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|top"
-                android:layout_margin="16dp"
+                android:layout_gravity="end|center_vertical"
+                android:clickable="true"
+                android:padding="8dp"
+                android:layout_margin="8dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_video_call_white_24dp" />
         </android.support.v7.widget.Toolbar>
@@ -69,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:alpha="0.6"
-                    android:text="6 долбаебов"
+                    android:text="6 участников"
                     android:textAppearance="@style/AvenirRegular.13.White"
                     android:transitionName="group_users_count_tv" />
 
@@ -136,6 +138,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/leave_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -146,7 +149,7 @@
                 android:foreground="?selectableItemBackground"
                 android:gravity="center"
                 android:padding="16dp"
-                android:text="Leave chat"
+                android:text="Leave group"
                 android:textAppearance="@style/AvenirRegular.16.Red" />
 
         </LinearLayout>

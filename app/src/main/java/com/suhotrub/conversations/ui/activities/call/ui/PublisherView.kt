@@ -51,7 +51,6 @@ class PublisherView @JvmOverloads constructor(context: Context, attrs: Attribute
         mediaStream.videoTracks[0].setEnabled(true)
         mediaStream.videoTracks[0].addSink(surface_view)
 
-
         username.text = userDto.login
         makeInfoVisible()
 

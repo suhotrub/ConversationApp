@@ -28,6 +28,9 @@ class GroupsRepository @Inject constructor(
     fun inviteToGroup(groupGuid: String, userGuid:String) =
             groupsApi.invite(GroupInviteDto(userGuid,groupGuid))
 
+    fun leaveGroup(groupGuid: String) =
+            groupsApi.leave(groupGuid)
+
     fun getJoinedGroups(offset: Int) =
             groupsApi.getJoinedGroups(20, offset)
 

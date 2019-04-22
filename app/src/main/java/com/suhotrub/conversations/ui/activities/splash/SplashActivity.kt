@@ -18,8 +18,6 @@ class SplashActivity : AppCompatActivity() {
 
     @Inject
     lateinit var usersInteractor: UsersInteractor
-    @Inject
-    lateinit var mainHubInteractor: MainHubInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

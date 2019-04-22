@@ -31,11 +31,11 @@ class MainHubInteractor @Inject constructor(
         createHubConnection()
     }
 
-    private var onHubConnected: BehaviorSubject<com.smartarmenia.dotnetcoresignalrclientjava.HubConnection>? = null
+    private var onHubConnected: BehaviorSubject<HubConnection>? = null
 
     private val listeners = hashMapOf<String, PublishSubject<HubMessage>>()
 
-    private lateinit var hubConnection: com.smartarmenia.dotnetcoresignalrclientjava.HubConnection
+    private lateinit var hubConnection: HubConnection
     fun createHubConnection() {
 
         if (::hubConnection.isInitialized) {
@@ -102,7 +102,7 @@ class MainHubInteractor @Inject constructor(
 
     }
 
-    fun safeOperation(action: (com.smartarmenia.dotnetcoresignalrclientjava.HubConnection) -> Unit) {
+    fun safeOperation(action: (HubConnection) -> Unit) {
         try {
             if (onHubConnected != null) {
                 onHubConnected?.doOnNext {

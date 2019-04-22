@@ -6,10 +6,7 @@ import com.suhotrub.conversations.model.group.GroupsDto
 import com.suhotrub.conversations.model.user.UsersDto
 import io.reactivex.Observable
 import okhttp3.ResponseBody
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 import javax.inject.Singleton
 
 /**
@@ -25,6 +22,11 @@ interface GroupsApi {
     @POST("Groups/invite")
     fun invite(
             @Body groupInviteDto: GroupInviteDto
+    ): Observable<ResponseBody>
+
+    @POST("Groups/leave")
+    fun leave(
+            @Query("groupGuid") groupGuid: String
     ): Observable<ResponseBody>
 
     /**
